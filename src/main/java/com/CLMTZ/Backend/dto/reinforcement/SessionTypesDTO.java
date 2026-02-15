@@ -1,4 +1,4 @@
-package com.CLMTZ.Backend.dto.security;
+package com.CLMTZ.Backend.dto.reinforcement;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

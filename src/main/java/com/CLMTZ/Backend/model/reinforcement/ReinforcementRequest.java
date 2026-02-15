@@ -9,7 +9,6 @@ import com.CLMTZ.Backend.model.academic.Students;
 import com.CLMTZ.Backend.model.academic.Syllabi;
 import com.CLMTZ.Backend.model.academic.Teaching;
 import com.CLMTZ.Backend.model.academic.TimeSlot;
-import com.CLMTZ.Backend.model.security.SessionTypes;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

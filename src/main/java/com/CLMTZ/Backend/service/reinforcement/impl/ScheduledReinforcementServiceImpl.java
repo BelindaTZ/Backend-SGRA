@@ -8,7 +8,7 @@ import com.CLMTZ.Backend.model.reinforcement.ScheduledReinforcement;
 import com.CLMTZ.Backend.repository.reinforcement.IScheduledReinforcementRepository;
 import com.CLMTZ.Backend.repository.academic.IModalityRepository;
 import com.CLMTZ.Backend.repository.academic.ITimeSlotRepository;
-import com.CLMTZ.Backend.repository.security.ISessionTypesRepository;
+import com.CLMTZ.Backend.repository.reinforcement.ISessionTypesRepository;
 import com.CLMTZ.Backend.service.reinforcement.IScheduledReinforcementService;
 import lombok.RequiredArgsConstructor;
 

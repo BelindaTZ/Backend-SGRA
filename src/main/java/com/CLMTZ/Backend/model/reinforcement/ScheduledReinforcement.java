@@ -11,7 +11,6 @@ import java.util.List;
 
 import com.CLMTZ.Backend.model.academic.Modality;
 import com.CLMTZ.Backend.model.academic.TimeSlot;
-import com.CLMTZ.Backend.model.security.SessionTypes;
 
 @AllArgsConstructor
 @NoArgsConstructor

@@ -1,9 +1,6 @@
-package com.CLMTZ.Backend.model.security;
+package com.CLMTZ.Backend.model.reinforcement;
 
 import java.util.List;
-
-import com.CLMTZ.Backend.model.reinforcement.ReinforcementRequest;
-import com.CLMTZ.Backend.model.reinforcement.ScheduledReinforcement;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -16,7 +13,7 @@ import lombok.NoArgsConstructor;
 @Data
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Entity
-@Table(name = "tbtipossesiones", schema = "seguridad")
+@Table(name = "tbtipossesiones", schema = "reforzamiento")
 public class SessionTypes {
     @Id
     @Column(name = "idtiposesion")

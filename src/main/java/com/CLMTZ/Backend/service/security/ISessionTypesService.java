@@ -1,7 +1,7 @@
 package com.CLMTZ.Backend.service.security;
 
 import java.util.List;
-import com.CLMTZ.Backend.dto.security.SessionTypesDTO;
+import com.CLMTZ.Backend.dto.reinforcement.SessionTypesDTO;
 
 public interface ISessionTypesService {
     List<SessionTypesDTO> findAll();

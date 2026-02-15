@@ -13,7 +13,7 @@ import com.CLMTZ.Backend.repository.academic.ISyllabiRepository;
 import com.CLMTZ.Backend.repository.academic.ITimeSlotRepository;
 import com.CLMTZ.Backend.repository.academic.IModalityRepository;
 import com.CLMTZ.Backend.repository.academic.IPeriodRepository;
-import com.CLMTZ.Backend.repository.security.ISessionTypesRepository;
+import com.CLMTZ.Backend.repository.reinforcement.ISessionTypesRepository;
 import com.CLMTZ.Backend.service.reinforcement.IReinforcementRequestService;
 import lombok.RequiredArgsConstructor;
 

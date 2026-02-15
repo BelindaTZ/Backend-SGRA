@@ -3,9 +3,9 @@ package com.CLMTZ.Backend.service.security.impl;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
-import com.CLMTZ.Backend.dto.security.SessionTypesDTO;
-import com.CLMTZ.Backend.model.security.SessionTypes;
-import com.CLMTZ.Backend.repository.security.ISessionTypesRepository;
+import com.CLMTZ.Backend.dto.reinforcement.SessionTypesDTO;
+import com.CLMTZ.Backend.model.reinforcement.SessionTypes;
+import com.CLMTZ.Backend.repository.reinforcement.ISessionTypesRepository;
 import com.CLMTZ.Backend.service.security.ISessionTypesService;
 import lombok.RequiredArgsConstructor;
 
