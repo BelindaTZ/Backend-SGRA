@@ -59,7 +59,6 @@ public class CoordinationServiceImpl implements ICoordinationService {
     }
 
     @Override
-    @Transactional
     public List<String> uploadStudents(List<StudentLoadDTO> dtos) {
         List<String> resultados = new ArrayList<>();
 
@@ -95,7 +94,8 @@ public class CoordinationServiceImpl implements ICoordinationService {
                 resultados.add("Cédula " + fila.getCedula() + ": OK");
 
             } catch (Exception e) {
-                resultados.add("Cédula " + fila.getCedula() + ": ERROR INTERNO (" + e.getMessage() + ")");
+                resultados.add("Cédula " + fila.getCedula() + ": ERROR (" + e.getMessage() + ")");
+                e.printStackTrace();
             }
         }
         return resultados;
