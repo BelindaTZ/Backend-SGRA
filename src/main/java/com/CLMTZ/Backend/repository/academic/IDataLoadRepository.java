@@ -21,7 +21,7 @@ public interface IDataLoadRepository extends JpaRepository<Students, Integer> {
 
     // Ejecución Carga (RF26)
     @Procedure(procedureName = "academico.sp_in_carga_estudiante")
-    void cargarEstudiante(
+    Map<String, Object> cargarEstudiante(
         @Param("p_identificador") String cedula,
         @Param("p_nombres") String nombres,
         @Param("p_apellidos") String apellidos,

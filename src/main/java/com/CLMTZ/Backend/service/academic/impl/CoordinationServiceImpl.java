@@ -69,9 +69,9 @@ public class CoordinationServiceImpl implements ICoordinationService {
                     fila.getCarreraTexto(), fila.getModalidadTexto(), fila.getPeriodoTexto()
                 );
 
-                if (ids == null || ids.get("id_carrera_encontrado") == null) {
-                    resultados.add("Cédula " + fila.getCedula() + ": ERROR (Carrera o Periodo inválido)");
-                    continue;
+                if (ids == null || ids.get("id_carrera_encontrado") == null || ids.get("id_periodo_encontrado") == null) {
+                    resultados.add("Cédula " + fila.getCedula() + ": ERROR (Carrera o Periodo no encontrados en BD)");
+                    continue; // Saltamos al siguiente
                 }
                 
                 // Conversión de tipos segura
@@ -86,7 +86,7 @@ public class CoordinationServiceImpl implements ICoordinationService {
                 }
 
                 // 3. Ejecutar SP
-                dataLoadRepository.cargarEstudiante(
+                Map<String, Object> repuestaSP = dataLoadRepository.cargarEstudiante(
                     fila.getCedula(), fila.getNombres(), fila.getApellidos(),
                     fila.getCorreo(), fila.getDireccion(), fila.getTelefono(),
                     idCarrera, idGenero, idPeriodo
