@@ -4,9 +4,13 @@ import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
 import com.CLMTZ.Backend.dto.academic.CoordinationDTO;
 import com.CLMTZ.Backend.dto.academic.StudentLoadDTO;
 import com.CLMTZ.Backend.service.academic.ICoordinationService;
+import com.CLMTZ.Backend.util.ExcelHelper;
+
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -32,7 +36,26 @@ public class CoordinationController {
     public ResponseEntity<Void> delete(@PathVariable Integer id) { service.deleteById(id); return ResponseEntity.noContent().build(); }
 
     @PostMapping("/upload-students")
-    public ResponseEntity<List<String>> uploadStudents(@RequestBody List<StudentLoadDTO> dtos) {
-        return ResponseEntity.ok(service.uploadStudents(dtos));
+    public ResponseEntity<?> uploadStudents(@RequestParam("file") MultipartFile file) {
+        String message = "";
+
+        if (ExcelHelper.hasExcelFormat(file)) {
+            try {
+                // 1. Convertimos Excel -> Lista de DTOs
+                List<StudentLoadDTO> dtos = ExcelHelper.excelToStudents(file.getInputStream());
+                
+                // 2. Enviamos la lista al servicio (tu lógica RF26/RF27)
+                List<String> reporte = service.uploadStudents(dtos);
+                
+                return ResponseEntity.ok(reporte);
+
+            } catch (Exception e) {
+                message = "No se pudo procesar el archivo: " + file.getOriginalFilename() + ". Error: " + e.getMessage();
+                return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(message);
+            }
+        }
+
+        message = "Por favor, sube un archivo Excel válido (.xlsx)";
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
     }
 }
