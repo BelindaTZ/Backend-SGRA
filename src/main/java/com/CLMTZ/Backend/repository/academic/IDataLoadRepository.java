@@ -18,19 +18,23 @@ public interface IDataLoadRepository extends JpaRepository<Students, Integer> {
 
     @Query(value = "SELECT general.fn_vlboolean_disponibilidad_correo(:correo, :cedula)", nativeQuery = true)
     boolean validarCorreoDisponible(@Param("correo") String correo, @Param("cedula") String cedula);
+    
+@Query(value = "SELECT academico.fn_vlinteger_existe_asignatura_periodo(:asignatura, :idCarrera)", nativeQuery = true)
+    Integer obtenerIdAsignatura(@Param("asignatura") String asignatura, @Param("idCarrera") Integer idCarrera);
 
-    // Ejecución Carga (RF26)
-    //@Procedure(procedureName = "academico.sp_in_carga_estudiante")
-    //Map<String, Object> cargarEstudiante(
-    //    @Param("p_identificador") String cedula,
-    //    @Param("p_nombres") String nombres,
-    //    @Param("p_apellidos") String apellidos,
-    //    @Param("p_correo") String correo,
-    //    @Param("p_direccion") String direccion,
-    //    @Param("p_telefono") String telefono,
-    //    @Param("p_idcarrera") Integer idCarrera,
-    //   @Param("p_idgenero") Integer idGenero,
-    //    @Param("p_idperiodo") Integer idPeriodo
-    //);
+    // 2. Obtener ID del Paralelo
+    // Llama a: academico.fn_vlinteger_id_paralelo (Ej: convierte 'A' en ID 1)
+    @Query(value = "SELECT academico.fn_vlinteger_id_paralelo(:paralelo)", nativeQuery = true)
+    Integer obtenerIdParalelo(@Param("paralelo") String paralelo);
+
+    // 3. Validar si ya tiene la clase asignada (Para evitar duplicados)
+    // Llama a: academico.fn_vlboolean_docente_clase_asignada
+    @Query(value = "SELECT academico.fn_vlboolean_docente_clase_asignada(:cedula, :idAsig, :idPeriodo, :idParalelo)", nativeQuery = true)
+    boolean validarDocenteConClase(
+        @Param("cedula") String cedula, 
+        @Param("idAsig") Integer idAsignatura, 
+        @Param("idPeriodo") Integer idPeriodo, 
+        @Param("idParalelo") Integer idParalelo
+    );
 
 }

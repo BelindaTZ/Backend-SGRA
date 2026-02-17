@@ -8,6 +8,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.CLMTZ.Backend.dto.academic.CoordinationDTO;
 import com.CLMTZ.Backend.dto.academic.StudentLoadDTO;
+import com.CLMTZ.Backend.dto.academic.TeachingDTO;
 import com.CLMTZ.Backend.service.academic.ICoordinationService;
 import com.CLMTZ.Backend.util.ExcelHelper;
 
@@ -57,5 +58,20 @@ public class CoordinationController {
 
         message = "Por favor, sube un archivo Excel válido (.xlsx)";
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
+    }
+
+    @PostMapping("/upload-teachers")
+    public ResponseEntity<?> uploadTeachers(@RequestParam("file") MultipartFile file) {
+        String message = "";
+        if (ExcelHelper.hasExcelFormat(file)) {
+            try {
+                List<TeachingDTO> dtos = ExcelHelper.excelToTeaching(file.getInputStream());
+                List<String> reporte = service.uploadTeachers(dtos);
+                return ResponseEntity.ok(reporte);
+            } catch (Exception e) {
+                return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("Error: " + e.getMessage());
+            }
+        }
+        return ResponseEntity.badRequest().body("Formato inválido");
     }
 }
