@@ -5,9 +5,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.CLMTZ.Backend.dto.security.ModuleManagementDTO;
+import com.CLMTZ.Backend.dto.security.Response.MasterTableListManagementResponseDTO;
 import com.CLMTZ.Backend.dto.security.Response.ModuleListManagementResponseDTO;
 import com.CLMTZ.Backend.service.security.IModuleManagementService;
 import lombok.RequiredArgsConstructor;
+
 
 
 @RestController
@@ -37,5 +39,12 @@ public class ModuleManagementController {
         List<ModuleListManagementResponseDTO> listModules = moduleManagementSer.listModuleManagerment(role);
         return ResponseEntity.ok(listModules);
     }
+
+    @GetMapping("list-master-tables")
+    public ResponseEntity<List<MasterTableListManagementResponseDTO>> getMethodName() {
+        List<MasterTableListManagementResponseDTO> listTables = moduleManagementSer.listMasterTables();
+        return ResponseEntity.ok(listTables);
+    }
+    
     
 }

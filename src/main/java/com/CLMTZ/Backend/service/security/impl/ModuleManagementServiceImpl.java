@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import com.CLMTZ.Backend.dto.security.ModuleManagementDTO;
+import com.CLMTZ.Backend.dto.security.Response.MasterTableListManagementResponseDTO;
 import com.CLMTZ.Backend.dto.security.Response.ModuleListManagementResponseDTO;
 import com.CLMTZ.Backend.model.security.ModuleManagement;
 import com.CLMTZ.Backend.repository.security.IModuleManagementRepository;
@@ -46,5 +47,10 @@ public class ModuleManagementServiceImpl implements IModuleManagementService {
         String vgrole = (grole == null) ? "" : grole;
 
         return moduleManagementRepo.listModuleManagements(vgrole);
+    }
+
+    @Override
+    public List<MasterTableListManagementResponseDTO> listMasterTables(){
+        return moduleManagementRepo.listMasterTables();
     }
 }
