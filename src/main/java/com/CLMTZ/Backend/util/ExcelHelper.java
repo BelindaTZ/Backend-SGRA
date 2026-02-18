@@ -18,9 +18,28 @@ public class ExcelHelper {
 
     private static final DataFormatter formatter = new DataFormatter();
     public static String TYPE = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+    public static String TYPE_XLS = "application/vnd.ms-excel";
 
     public static boolean hasExcelFormat(MultipartFile file) {
-        return TYPE.equals(file.getContentType());
+        if (file == null || file.isEmpty()) {
+            return false;
+        }
+        
+        String contentType = file.getContentType();
+        String filename = file.getOriginalFilename();
+        
+        // Validar por extensión del archivo (más confiable)
+        if (filename != null && (filename.toLowerCase().endsWith(".xlsx") || filename.toLowerCase().endsWith(".xls"))) {
+            return true;
+        }
+        
+        // Validar por content-type
+        if (contentType != null) {
+            return TYPE.equals(contentType) || TYPE_XLS.equals(contentType) || 
+                   contentType.contains("spreadsheet") || contentType.contains("excel");
+        }
+        
+        return false;
     }
 
     public static List<StudentLoadDTO> excelToStudents(InputStream is) {

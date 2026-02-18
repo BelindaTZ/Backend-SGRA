@@ -40,10 +40,17 @@ public class CoordinationController {
     public ResponseEntity<?> uploadStudents(@RequestParam("file") MultipartFile file) {
         String message = "";
 
+        // Debug: imprimir info del archivo
+        System.out.println("=== UPLOAD STUDENTS ===");
+        System.out.println("Archivo recibido: " + file.getOriginalFilename());
+        System.out.println("Content-Type: " + file.getContentType());
+        System.out.println("Tamaño: " + file.getSize() + " bytes");
+
         if (ExcelHelper.hasExcelFormat(file)) {
             try {
                 // 1. Convertimos Excel -> Lista de DTOs
                 List<StudentLoadDTO> dtos = ExcelHelper.excelToStudents(file.getInputStream());
+                System.out.println("Filas leídas del Excel: " + dtos.size());
                 
                 // 2. Enviamos la lista al servicio (tu lógica RF26/RF27)
                 List<String> reporte = service.uploadStudents(dtos);
@@ -51,27 +58,39 @@ public class CoordinationController {
                 return ResponseEntity.ok(reporte);
 
             } catch (Exception e) {
+                e.printStackTrace(); // Imprime el stack trace completo en consola
                 message = "No se pudo procesar el archivo: " + file.getOriginalFilename() + ". Error: " + e.getMessage();
                 return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(message);
             }
         }
 
-        message = "Por favor, sube un archivo Excel válido (.xlsx)";
+        message = "Por favor, sube un archivo Excel válido (.xlsx). Archivo recibido: " + file.getOriginalFilename() + ", tipo: " + file.getContentType();
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
     }
 
     @PostMapping("/upload-teachers")
     public ResponseEntity<?> uploadTeachers(@RequestParam("file") MultipartFile file) {
         String message = "";
+
+        // Debug: imprimir info del archivo
+        System.out.println("=== UPLOAD TEACHERS ===");
+        System.out.println("Archivo recibido: " + file.getOriginalFilename());
+        System.out.println("Content-Type: " + file.getContentType());
+        System.out.println("Tamaño: " + file.getSize() + " bytes");
+
         if (ExcelHelper.hasExcelFormat(file)) {
             try {
                 List<TeachingDTO> dtos = ExcelHelper.excelToTeaching(file.getInputStream());
+                System.out.println("Filas leídas del Excel: " + dtos.size());
+                
                 List<String> reporte = service.uploadTeachers(dtos);
                 return ResponseEntity.ok(reporte);
             } catch (Exception e) {
+                e.printStackTrace();
                 return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("Error: " + e.getMessage());
             }
         }
-        return ResponseEntity.badRequest().body("Formato inválido");
+        message = "Formato inválido. Archivo: " + file.getOriginalFilename() + ", tipo: " + file.getContentType();
+        return ResponseEntity.badRequest().body(message);
     }
 }
