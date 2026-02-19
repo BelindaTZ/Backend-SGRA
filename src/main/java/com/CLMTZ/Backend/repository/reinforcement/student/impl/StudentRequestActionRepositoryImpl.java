@@ -1,5 +1,6 @@
 package com.CLMTZ.Backend.repository.reinforcement.student.impl;
 
+import com.CLMTZ.Backend.config.DynamicDataSourceService;
 import com.CLMTZ.Backend.dto.reinforcement.student.StudentCancelRequestResponseDTO;
 import com.CLMTZ.Backend.repository.reinforcement.student.StudentRequestActionRepository;
 import org.springframework.dao.DataAccessException;
@@ -10,10 +11,14 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class StudentRequestActionRepositoryImpl implements StudentRequestActionRepository {
 
-    private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+    private final DynamicDataSourceService dynamicDataSourceService;
 
-    public StudentRequestActionRepositoryImpl(NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
-        this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
+    public StudentRequestActionRepositoryImpl(DynamicDataSourceService dynamicDataSourceService) {
+        this.dynamicDataSourceService = dynamicDataSourceService;
+    }
+
+    private NamedParameterJdbcTemplate getJdbcTemplate() {
+        return dynamicDataSourceService.getJdbcTemplate();
     }
 
     @Override
@@ -50,7 +55,7 @@ public class StudentRequestActionRepositoryImpl implements StudentRequestActionR
     }
 
     private StudentCancelRequestResponseDTO executeAndInterpret(String sql, MapSqlParameterSource params, Integer requestId) {
-        Object result = namedParameterJdbcTemplate.queryForObject(sql, params, Object.class);
+        Object result = getJdbcTemplate().queryForObject(sql, params, Object.class);
 
         if (result == null) {
             return new StudentCancelRequestResponseDTO(requestId, "CANCELLED", "Request cancelled successfully");

@@ -63,8 +63,17 @@ public class SessionAuthFilter implements Filter {
             return;
         }
 
-        // Sesión válida, continuar
-        chain.doFilter(request, response);
+        // Poblar UserContextHolder para acceso desde cualquier parte del código
+        try {
+            UserContextHolder.setContext(ctx);
+            log.debug("UserContext establecido para usuario: {} (dbUser: {})", ctx.getUsername(), ctx.getDbUser());
+
+            // Sesión válida, continuar
+            chain.doFilter(request, response);
+        } finally {
+            // IMPORTANTE: Limpiar siempre al final del request para evitar memory leaks
+            UserContextHolder.clear();
+        }
     }
 
     private boolean isPublicPath(String path) {

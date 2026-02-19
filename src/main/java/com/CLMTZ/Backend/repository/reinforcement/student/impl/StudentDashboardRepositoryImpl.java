@@ -1,5 +1,6 @@
 package com.CLMTZ.Backend.repository.reinforcement.student.impl;
 
+import com.CLMTZ.Backend.config.DynamicDataSourceService;
 import com.CLMTZ.Backend.dto.reinforcement.student.StudentDashboardDTO;
 import com.CLMTZ.Backend.repository.reinforcement.student.StudentDashboardRepository;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -13,10 +14,14 @@ import java.util.List;
 @Repository
 public class StudentDashboardRepositoryImpl implements StudentDashboardRepository {
 
-    private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+    private final DynamicDataSourceService dynamicDataSourceService;
 
-    public StudentDashboardRepositoryImpl(NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
-        this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
+    public StudentDashboardRepositoryImpl(DynamicDataSourceService dynamicDataSourceService) {
+        this.dynamicDataSourceService = dynamicDataSourceService;
+    }
+
+    private NamedParameterJdbcTemplate getJdbcTemplate() {
+        return dynamicDataSourceService.getJdbcTemplate();
     }
 
     @Override
@@ -48,7 +53,7 @@ public class StudentDashboardRepositoryImpl implements StudentDashboardRepositor
     }
 
     private StudentDashboardDTO executeQuery(String sql, MapSqlParameterSource params) {
-        List<StudentDashboardDTO> results = namedParameterJdbcTemplate.query(sql, params, (rs, rowNum) -> {
+        List<StudentDashboardDTO> results = getJdbcTemplate().query(sql, params, (rs, rowNum) -> {
             StudentDashboardDTO dto = new StudentDashboardDTO();
 
             dto.setPending(getColumnValue(rs, "pendientes", "pending"));

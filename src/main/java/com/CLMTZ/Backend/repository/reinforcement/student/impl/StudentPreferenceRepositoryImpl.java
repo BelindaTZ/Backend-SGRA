@@ -1,5 +1,6 @@
 package com.CLMTZ.Backend.repository.reinforcement.student.impl;
 
+import com.CLMTZ.Backend.config.DynamicDataSourceService;
 import com.CLMTZ.Backend.dto.reinforcement.student.NotificationChannelDTO;
 import com.CLMTZ.Backend.dto.reinforcement.student.StudentPreferenceDTO;
 import com.CLMTZ.Backend.repository.reinforcement.student.StudentPreferenceRepository;
@@ -12,17 +13,21 @@ import java.util.List;
 @Repository
 public class StudentPreferenceRepositoryImpl implements StudentPreferenceRepository {
 
-    private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+    private final DynamicDataSourceService dynamicDataSourceService;
 
-    public StudentPreferenceRepositoryImpl(NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
-        this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
+    public StudentPreferenceRepositoryImpl(DynamicDataSourceService dynamicDataSourceService) {
+        this.dynamicDataSourceService = dynamicDataSourceService;
+    }
+
+    private NamedParameterJdbcTemplate getJdbcTemplate() {
+        return dynamicDataSourceService.getJdbcTemplate();
     }
 
     @Override
     public List<NotificationChannelDTO> listActiveChannels() {
         String sql = "SELECT idcanalnotificacion, nombrecanal FROM general.vw_canales_activos ORDER BY nombrecanal";
 
-        return namedParameterJdbcTemplate.query(sql, (rs, rowNum) -> {
+        return getJdbcTemplate().query(sql, (rs, rowNum) -> {
             NotificationChannelDTO dto = new NotificationChannelDTO();
             dto.setChannelId(rs.getInt("idcanalnotificacion"));
             dto.setChannelName(rs.getString("nombrecanal"));
@@ -38,7 +43,7 @@ public class StudentPreferenceRepositoryImpl implements StudentPreferenceReposit
         MapSqlParameterSource params = new MapSqlParameterSource();
         params.addValue("userId", userId);
 
-        List<StudentPreferenceDTO> results = namedParameterJdbcTemplate.query(sql, params, (rs, rowNum) -> {
+        List<StudentPreferenceDTO> results = getJdbcTemplate().query(sql, params, (rs, rowNum) -> {
             StudentPreferenceDTO dto = new StudentPreferenceDTO();
             dto.setPreferenceId(rs.getInt("idpreferencia"));
             dto.setUserId(rs.getInt("idusuario"));
@@ -64,6 +69,6 @@ public class StudentPreferenceRepositoryImpl implements StudentPreferenceReposit
         params.addValue("channelId", channelId);
         params.addValue("reminderAnticipation", reminderAnticipation);
 
-        namedParameterJdbcTemplate.update(sql, params);
+        getJdbcTemplate().update(sql, params);
     }
 }

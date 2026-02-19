@@ -1,5 +1,6 @@
 package com.CLMTZ.Backend.repository.reinforcement.student.impl;
 
+import com.CLMTZ.Backend.config.DynamicDataSourceService;
 import com.CLMTZ.Backend.dto.reinforcement.student.StudentRequestCreateRequestDTO;
 import com.CLMTZ.Backend.dto.reinforcement.student.StudentRequestPreviewRequestDTO;
 import com.CLMTZ.Backend.dto.reinforcement.student.StudentRequestPreviewResponseDTO;
@@ -13,10 +14,14 @@ import java.util.List;
 @Repository
 public class StudentRequestRepositoryImpl implements StudentRequestRepository {
 
-    private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+    private final DynamicDataSourceService dynamicDataSourceService;
 
-    public StudentRequestRepositoryImpl(NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
-        this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
+    public StudentRequestRepositoryImpl(DynamicDataSourceService dynamicDataSourceService) {
+        this.dynamicDataSourceService = dynamicDataSourceService;
+    }
+
+    private NamedParameterJdbcTemplate getJdbcTemplate() {
+        return dynamicDataSourceService.getJdbcTemplate();
     }
 
     @Override
@@ -31,7 +36,7 @@ public class StudentRequestRepositoryImpl implements StudentRequestRepository {
         params.addValue("modalityId", req.getModalityId());
         params.addValue("sessionTypeId", req.getSessionTypeId());
 
-        List<StudentRequestPreviewResponseDTO> results = namedParameterJdbcTemplate.query(sql, params, (rs, rowNum) -> {
+        List<StudentRequestPreviewResponseDTO> results = getJdbcTemplate().query(sql, params, (rs, rowNum) -> {
             StudentRequestPreviewResponseDTO dto = new StudentRequestPreviewResponseDTO();
             dto.setSubjectId(rs.getInt("idasignatura"));
             dto.setSubjectName(rs.getString("asignatura"));
@@ -76,7 +81,7 @@ public class StudentRequestRepositoryImpl implements StudentRequestRepository {
         params.addValue("fileUrl", req.getFileUrl());
         params.addValue("periodId", req.getPeriodId());
 
-        Integer requestId = namedParameterJdbcTemplate.queryForObject(sql, params, Integer.class);
+        Integer requestId = getJdbcTemplate().queryForObject(sql, params, Integer.class);
 
         if (requestId == null) {
             throw new IllegalStateException("Failed to create request: no ID returned");

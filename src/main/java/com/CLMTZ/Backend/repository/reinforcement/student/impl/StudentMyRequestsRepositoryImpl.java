@@ -1,5 +1,6 @@
 package com.CLMTZ.Backend.repository.reinforcement.student.impl;
 
+import com.CLMTZ.Backend.config.DynamicDataSourceService;
 import com.CLMTZ.Backend.dto.reinforcement.student.StudentMyRequestItemDTO;
 import com.CLMTZ.Backend.dto.reinforcement.student.StudentMyRequestsChipsDTO;
 import com.CLMTZ.Backend.dto.reinforcement.student.StudentMyRequestsPageDTO;
@@ -16,10 +17,14 @@ import java.util.List;
 @Repository
 public class StudentMyRequestsRepositoryImpl implements StudentMyRequestsRepository {
 
-    private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+    private final DynamicDataSourceService dynamicDataSourceService;
 
-    public StudentMyRequestsRepositoryImpl(NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
-        this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
+    public StudentMyRequestsRepositoryImpl(DynamicDataSourceService dynamicDataSourceService) {
+        this.dynamicDataSourceService = dynamicDataSourceService;
+    }
+
+    private NamedParameterJdbcTemplate getJdbcTemplate() {
+        return dynamicDataSourceService.getJdbcTemplate();
     }
 
     @Override
@@ -42,7 +47,7 @@ public class StudentMyRequestsRepositoryImpl implements StudentMyRequestsReposit
         List<StudentMyRequestItemDTO> items = new ArrayList<>();
         final Long[] totalCount = {0L};
 
-        namedParameterJdbcTemplate.query(sql, params, (rs) -> {
+        getJdbcTemplate().query(sql, params, (rs) -> {
             StudentMyRequestItemDTO item = new StudentMyRequestItemDTO();
             item.setRequestId(rs.getInt("idsolicitudrefuerzo"));
 
@@ -74,7 +79,7 @@ public class StudentMyRequestsRepositoryImpl implements StudentMyRequestsReposit
         params.addValue("userId", userId);
         params.addValue("periodId", periodId);
 
-        List<StudentMyRequestsChipsDTO> results = namedParameterJdbcTemplate.query(sql, params, (rs, rowNum) -> {
+        List<StudentMyRequestsChipsDTO> results = getJdbcTemplate().query(sql, params, (rs, rowNum) -> {
             StudentMyRequestsChipsDTO dto = new StudentMyRequestsChipsDTO();
             dto.setPending(rs.getLong("pendientes"));
             dto.setAccepted(rs.getLong("aceptadas"));
@@ -98,7 +103,7 @@ public class StudentMyRequestsRepositoryImpl implements StudentMyRequestsReposit
         params.addValue("userId", userId);
         params.addValue("periodId", periodId);
 
-        return namedParameterJdbcTemplate.query(sql, params, (rs, rowNum) -> {
+        return getJdbcTemplate().query(sql, params, (rs, rowNum) -> {
             StudentMyRequestsStatusSummaryDTO dto = new StudentMyRequestsStatusSummaryDTO();
             dto.setStatusId(rs.getInt("estado_id"));
             dto.setStatusJson(rs.getString("estado"));

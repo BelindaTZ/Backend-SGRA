@@ -1,5 +1,6 @@
 package com.CLMTZ.Backend.repository.reinforcement.student.impl;
 
+import com.CLMTZ.Backend.config.DynamicDataSourceService;
 import com.CLMTZ.Backend.dto.reinforcement.student.StudentHistoryRequestItemDTO;
 import com.CLMTZ.Backend.dto.reinforcement.student.StudentHistoryRequestsPageDTO;
 import com.CLMTZ.Backend.dto.reinforcement.student.StudentHistorySessionItemDTO;
@@ -17,10 +18,14 @@ import java.util.List;
 @Repository
 public class StudentHistoryRepositoryImpl implements StudentHistoryRepository {
 
-    private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+    private final DynamicDataSourceService dynamicDataSourceService;
 
-    public StudentHistoryRepositoryImpl(NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
-        this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
+    public StudentHistoryRepositoryImpl(DynamicDataSourceService dynamicDataSourceService) {
+        this.dynamicDataSourceService = dynamicDataSourceService;
+    }
+
+    private NamedParameterJdbcTemplate getJdbcTemplate() {
+        return dynamicDataSourceService.getJdbcTemplate();
     }
 
     @Override
@@ -37,7 +42,7 @@ public class StudentHistoryRepositoryImpl implements StudentHistoryRepository {
         List<StudentHistoryRequestItemDTO> items = new ArrayList<>();
         final Long[] totalCount = {0L};
 
-        namedParameterJdbcTemplate.query(sql, params, (rs) -> {
+        getJdbcTemplate().query(sql, params, (rs) -> {
             StudentHistoryRequestItemDTO item = new StudentHistoryRequestItemDTO();
             item.setRequestId(rs.getInt("idsolicitudrefuerzo"));
 
@@ -77,7 +82,7 @@ public class StudentHistoryRepositoryImpl implements StudentHistoryRepository {
         List<StudentHistorySessionItemDTO> items = new ArrayList<>();
         final Long[] totalCount = {0L};
 
-        namedParameterJdbcTemplate.query(sql, params, (rs) -> {
+        getJdbcTemplate().query(sql, params, (rs) -> {
             StudentHistorySessionItemDTO item = new StudentHistorySessionItemDTO();
             item.setCompletedSessionId(rs.getInt("idrefuerzorealizado"));
             item.setAttended(rs.getBoolean("asistencia"));

@@ -1,5 +1,6 @@
 package com.CLMTZ.Backend.service.security.impl;
 
+import com.CLMTZ.Backend.config.UserConnectionPool;
 import com.CLMTZ.Backend.dto.security.LoginRequestDTO;
 import com.CLMTZ.Backend.dto.security.LoginResponseDTO;
 import com.CLMTZ.Backend.dto.security.ServerCredentialDTO;
@@ -33,6 +34,7 @@ public class AuthServiceImpl implements IAuthService {
     private final IAccessRepository accessRepository;
     private final IUsersRolesRepository usersRolesRepository;
     private final IServerCredentialRepository serverCredentialRepository;
+    private final UserConnectionPool userConnectionPool;
 
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
@@ -85,6 +87,7 @@ public class AuthServiceImpl implements IAuthService {
         // 6. Obtener credenciales del servidor (LOGIN SERVER)
         boolean serverSynced = false;
         String dbUser = null;
+        String dbPassword = null;
 
         if (masterKey != null && !masterKey.isEmpty()) {
             Optional<ServerCredentialDTO> serverCredOpt = serverCredentialRepository.getServerCredential(user.getUserId(), masterKey);
@@ -92,6 +95,7 @@ public class AuthServiceImpl implements IAuthService {
                 ServerCredentialDTO serverCred = serverCredOpt.get();
                 serverSynced = true;
                 dbUser = serverCred.getDbUser();
+                dbPassword = serverCred.getDbPassword();
                 log.info("Credenciales de servidor sincronizadas para usuario: {}", request.getUsername());
             } else {
                 log.warn("Credenciales de servidor no sincronizadas para usuario: {}", request.getUsername());
@@ -112,6 +116,7 @@ public class AuthServiceImpl implements IAuthService {
         ctx.setRoles(roles);
         ctx.setServerSynced(serverSynced);
         ctx.setDbUser(dbUser);
+        ctx.setDbPassword(dbPassword); // Solo en memoria de sesión
 
         session.setAttribute(SESSION_CTX_KEY, ctx);
         log.info("Login exitoso para usuario: {}. Roles: {}", request.getUsername(), roles);
@@ -150,6 +155,10 @@ public class AuthServiceImpl implements IAuthService {
         UserContext ctx = getUserContext(session);
         if (ctx != null) {
             log.info("Logout para usuario: {}", ctx.getUsername());
+            // Liberar pool de conexiones del usuario
+            if (ctx.getDbUser() != null) {
+                userConnectionPool.evict(ctx.getDbUser());
+            }
         }
         session.invalidate();
     }

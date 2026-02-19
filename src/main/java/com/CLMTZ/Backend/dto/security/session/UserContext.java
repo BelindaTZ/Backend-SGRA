@@ -19,4 +19,5 @@ public class UserContext implements Serializable {
     private List<String> roles;
     private boolean serverSynced;
     private String dbUser;
+    private String dbPassword; // Solo en memoria de sesión, nunca expuesto al cliente
 }
