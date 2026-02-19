@@ -45,7 +45,6 @@ public class ModuleManagementServiceImpl implements IModuleManagementService {
     @Override
     public List<ModuleListManagementResponseDTO> listModuleManagerment(String grole){
         String vgrole = (grole == null) ? "" : grole;
-
         return moduleManagementRepo.listModuleManagements(vgrole);
     }
 

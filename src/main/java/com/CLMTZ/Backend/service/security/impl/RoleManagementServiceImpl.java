@@ -48,12 +48,27 @@ public class RoleManagementServiceImpl implements IRoleManagementService {
 
     @Override
     public void deleteById(Integer id) { roleManagementRepo.deleteById(id); }
+    
 
     private RoleManagementDTO toDTO(RoleManagement e) {
         RoleManagementDTO d = new RoleManagementDTO();
         d.setRoleGId(e.getRoleGId()); d.setRoleG(e.getRoleG()); d.setServerRole(e.getServerRole());
         d.setDescription(e.getDescription()); d.setCreatedAt(e.getCreatedAt()); d.setState(e.getState());
         return d;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<RoleManagementDTO> listRoleNames(){
+
+        List<RoleManagement> rolesEntity = roleManagementRepo.findByStateTrue();
+
+        return rolesEntity.stream().map(rolEntity -> {
+            RoleManagementDTO dto = new RoleManagementDTO();           
+            dto.setRoleGId(rolEntity.getRoleGId()); 
+            dto.setRoleG(rolEntity.getRoleG());           
+            return dto;
+        }).toList();
     }
 
     @Override

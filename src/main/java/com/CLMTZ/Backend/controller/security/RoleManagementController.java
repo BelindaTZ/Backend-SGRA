@@ -51,4 +51,10 @@ public class RoleManagementController {
         List<RoleListManagementResponseDTO> list = roleManagementSer.listRoles(filter, state);
         return ResponseEntity.ok(list);
     }
+
+    @GetMapping("/list-roles-combo")
+    public ResponseEntity<List<RoleManagementDTO>> listRolesCombobox(){
+        List<RoleManagementDTO> list = roleManagementSer.listRoleNames();
+        return ResponseEntity.ok(list);
+    }
 }

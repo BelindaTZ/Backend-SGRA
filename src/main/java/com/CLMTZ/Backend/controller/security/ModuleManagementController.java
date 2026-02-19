@@ -40,11 +40,9 @@ public class ModuleManagementController {
         return ResponseEntity.ok(listModules);
     }
 
-    @GetMapping("list-master-tables")
+    @GetMapping("/list-master-tables")
     public ResponseEntity<List<MasterTableListManagementResponseDTO>> getMethodName() {
         List<MasterTableListManagementResponseDTO> listTables = moduleManagementSer.listMasterTables();
         return ResponseEntity.ok(listTables);
     }
-    
-    
 }

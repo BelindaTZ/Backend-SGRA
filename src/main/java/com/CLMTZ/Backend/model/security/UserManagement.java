@@ -1,5 +1,6 @@
 package com.CLMTZ.Backend.model.security;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import jakarta.persistence.*;
@@ -26,6 +27,9 @@ public class UserManagement {
 
     @Column(name = "estado", nullable = false, columnDefinition = "boolean default true")
     private Boolean state = true;
+
+    @Column(name = "fechahoracreacion", nullable = false, columnDefinition = "timestamp default CURRENT_TIMESTAMP")
+    private LocalDateTime createdAt;
 
     @OneToMany(mappedBy = "userManagement", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private List<UserRoleManagement> userRoleManagements;
