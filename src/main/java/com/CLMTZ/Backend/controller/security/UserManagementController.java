@@ -1,5 +1,6 @@
 package com.CLMTZ.Backend.controller.security;
 
+import java.time.LocalDate;
 import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -7,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 import com.CLMTZ.Backend.dto.security.SpResponseDTO;
 import com.CLMTZ.Backend.dto.security.UserManagementDTO;
+import com.CLMTZ.Backend.dto.security.Response.UserListManagementResponseDTO;
 import com.CLMTZ.Backend.service.security.IUserManagementService;
 import lombok.RequiredArgsConstructor;
 
@@ -33,6 +35,12 @@ public class UserManagementController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Integer id) { userManagementser.deleteById(id); return ResponseEntity.noContent().build(); }
+
+    @GetMapping("/list-userG")
+    public ResponseEntity<List<UserListManagementResponseDTO>> listUserG(@RequestParam(required = false) String filter,@RequestParam(required = false) LocalDate date, @RequestParam(required = false) Boolean state){
+        List<UserListManagementResponseDTO> requestList =  userManagementser.listUserListManagement(filter, date, state);
+        return  ResponseEntity.ok(requestList);
+    }
 
     @PostMapping("/create-user")
     public ResponseEntity<SpResponseDTO> createUser(@RequestBody UserManagementDTO requestUser) {    
