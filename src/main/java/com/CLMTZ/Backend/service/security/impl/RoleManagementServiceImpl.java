@@ -10,11 +10,9 @@ import com.CLMTZ.Backend.dto.security.SpResponseDTO;
 import com.CLMTZ.Backend.dto.security.Response.RoleListManagementResponseDTO;
 import com.CLMTZ.Backend.model.security.RoleManagement;
 import com.CLMTZ.Backend.repository.security.IRoleManagementRepository;
+import com.CLMTZ.Backend.repository.security.IAdminDynamicRepository;
 import com.CLMTZ.Backend.service.security.IRoleManagementService;
 
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.ParameterMode;
-import jakarta.persistence.StoredProcedureQuery;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -22,7 +20,7 @@ import lombok.RequiredArgsConstructor;
 public class RoleManagementServiceImpl implements IRoleManagementService {
 
     private final IRoleManagementRepository roleManagementRepo;
-    private final EntityManager entityManager;
+    private final IAdminDynamicRepository adminDynamicRepo;
 
     @Override
     public List<RoleManagementDTO> findAll() { return roleManagementRepo.findAll().stream().map(this::toDTO).collect(Collectors.toList()); }
@@ -77,65 +75,18 @@ public class RoleManagementServiceImpl implements IRoleManagementService {
         String textFilter = (filter == null) ? "" : filter;
         Boolean stateFilter = (state == null) ? true : state;
 
-        return roleManagementRepo.listRoles(textFilter, stateFilter);
+        return adminDynamicRepo.listRoles(textFilter, stateFilter);
     }
 
     @Override
     @Transactional
     public SpResponseDTO createGRole(RoleManagementDTO roleRequest){
-        SpResponseDTO responseDTO;
-
-        StoredProcedureQuery query = entityManager.createStoredProcedureQuery("seguridad.sp_in_creargrol");
-
-        query.registerStoredProcedureParameter("p_grol", String.class, ParameterMode.IN);
-
-        query.registerStoredProcedureParameter("p_descripcion", String.class, ParameterMode.IN);
-
-        query.registerStoredProcedureParameter("p_mensaje", String.class, ParameterMode.OUT);
-        
-        query.registerStoredProcedureParameter("p_exito", Boolean.class, ParameterMode.OUT);
-
-        query.setParameter("p_grol", roleRequest.getRoleG());
-        query.setParameter("p_descripcion", roleRequest.getDescription());
-
-        query.execute();
-
-        String message = (String) query.getOutputParameterValue("p_mensaje");
-        Boolean success = (Boolean) query.getOutputParameterValue("p_exito");
-
-        responseDTO = new SpResponseDTO(message,success);
-
-        return responseDTO;
+        return adminDynamicRepo.createGRole(roleRequest.getRoleG(), roleRequest.getDescription());
     }
 
     @Override
     @Transactional
     public SpResponseDTO updateGRole(RoleManagementDTO roleRequest){
-        SpResponseDTO responseDTO;
-
-        StoredProcedureQuery query = entityManager.createStoredProcedureQuery("seguridad.sp_up_grol");
-
-        query.registerStoredProcedureParameter("p_idgrol", Integer.class, ParameterMode.IN);
-
-        query.registerStoredProcedureParameter("p_grol", String.class, ParameterMode.IN);
-
-        query.registerStoredProcedureParameter("p_descripcion", String.class, ParameterMode.IN);
-
-        query.registerStoredProcedureParameter("p_mensaje", String.class, ParameterMode.OUT);
-        
-        query.registerStoredProcedureParameter("p_exito", Boolean.class, ParameterMode.OUT);
-
-        query.setParameter("p_idgrol", roleRequest.getRoleGId());
-        query.setParameter("p_grol", roleRequest.getRoleG());
-        query.setParameter("p_descripcion", roleRequest.getDescription());
-
-        query.execute();
-
-        String message = (String) query.getOutputParameterValue("p_mensaje");
-        Boolean success = (Boolean) query.getOutputParameterValue("p_exito");
-
-        responseDTO = new SpResponseDTO(message,success);
-
-        return responseDTO;
+        return adminDynamicRepo.updateGRole(roleRequest.getRoleGId(), roleRequest.getRoleG(), roleRequest.getDescription());
     }
 }

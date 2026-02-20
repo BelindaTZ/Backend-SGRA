@@ -12,11 +12,9 @@ import com.CLMTZ.Backend.dto.security.UserManagementDTO;
 import com.CLMTZ.Backend.dto.security.Response.UserListManagementResponseDTO;
 import com.CLMTZ.Backend.model.security.UserManagement;
 import com.CLMTZ.Backend.repository.security.IUserManagementRepository;
+import com.CLMTZ.Backend.repository.security.IAdminDynamicRepository;
 import com.CLMTZ.Backend.service.security.IUserManagementService;
 
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.ParameterMode;
-import jakarta.persistence.StoredProcedureQuery;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
@@ -25,7 +23,7 @@ import lombok.RequiredArgsConstructor;
 public class UserManagementServiceImpl implements IUserManagementService {
 
     private final IUserManagementRepository userManagementRepo;
-    private final EntityManager entityManager;
+    private final IAdminDynamicRepository adminDynamicRepo;
 
     @Override
     public List<UserManagementDTO> findAll() { return userManagementRepo.findAll().stream().map(this::toDTO).collect(Collectors.toList()); }
@@ -60,7 +58,7 @@ public class UserManagementServiceImpl implements IUserManagementService {
     @Transactional
     public List<UserListManagementResponseDTO> listUserListManagement(String filterUser, LocalDate date, Boolean state){
         try {
-            return userManagementRepo.listUsersManagement(filterUser, date, state); 
+            return adminDynamicRepo.listUsersManagement(filterUser, date, state);
         } catch (Exception e) {
             throw new RuntimeException("Error al listar a los usuarios" + e.getMessage());
         }  
@@ -69,55 +67,12 @@ public class UserManagementServiceImpl implements IUserManagementService {
     @Override
     @Transactional
     public SpResponseDTO createGUser(UserManagementDTO userRequest){
-
-        SpResponseDTO responseDTO;
-        
-        StoredProcedureQuery query = entityManager.createStoredProcedureQuery("seguridad.sp_in_creargusuario");
-
-        query.registerStoredProcedureParameter("p_gusuario", String.class, ParameterMode.IN);
-        query.registerStoredProcedureParameter("p_gcontrasena", String.class, ParameterMode.IN);
-        query.registerStoredProcedureParameter("p_mensaje", String.class, ParameterMode.OUT);
-        query.registerStoredProcedureParameter("p_exito", Boolean.class, ParameterMode.OUT);
-
-        query.setParameter("p_gusuario", userRequest.getUser());
-        query.setParameter("p_gcontrasena", userRequest.getPassword());
-
-        query.execute();
-
-        String message = (String) query.getOutputParameterValue("p_mensaje");
-        Boolean success = (Boolean) query.getOutputParameterValue("p_exito");
-
-        responseDTO = new SpResponseDTO(message,success);
-
-        return responseDTO;
+        return adminDynamicRepo.createGUser(userRequest.getUser(), userRequest.getPassword());
     }
 
     @Override
     @Transactional
     public SpResponseDTO updateGUser(UserManagementDTO userRequest){
-
-        SpResponseDTO responseDTO;
-
-        StoredProcedureQuery query = entityManager.createStoredProcedureQuery("seguridad.sp_up_gusuario");
-
-        query.registerStoredProcedureParameter("p_idgusuario", Integer.class, ParameterMode.IN);
-        query.registerStoredProcedureParameter("p_gusuario", String.class, ParameterMode.IN);
-        query.registerStoredProcedureParameter("p_gcontrasena", String.class, ParameterMode.IN);
-        
-        query.registerStoredProcedureParameter("p_mensaje", String.class, ParameterMode.OUT);
-        query.registerStoredProcedureParameter("p_exito", Boolean.class, ParameterMode.OUT);
-
-        query.setParameter("p_idgusuario", userRequest.getUserGId());
-        query.setParameter("p_gusuario", userRequest.getUser());
-        query.setParameter("p_gcontrasena", userRequest.getPassword());
-
-        query.execute();
-
-        String message = (String) query.getOutputParameterValue("p_mensaje");
-        Boolean success = (Boolean) query.getOutputParameterValue("p_exito");
-
-        responseDTO = new SpResponseDTO(message,success);
-
-        return responseDTO;
+        return adminDynamicRepo.updateGUser(userRequest.getUserGId(), userRequest.getUser(), userRequest.getPassword());
     }
 }
