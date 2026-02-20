@@ -1,12 +1,11 @@
 package com.CLMTZ.Backend.controller.reinforcement.student;
 
+import com.CLMTZ.Backend.config.UserContextHolder;
 import com.CLMTZ.Backend.dto.reinforcement.student.StudentMyRequestsChipsDTO;
 import com.CLMTZ.Backend.dto.reinforcement.student.StudentMyRequestsPageDTO;
 import com.CLMTZ.Backend.dto.reinforcement.student.StudentMyRequestsStatusSummaryDTO;
 import com.CLMTZ.Backend.dto.security.session.UserContext;
 import com.CLMTZ.Backend.service.reinforcement.student.StudentMyRequestsService;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,20 +30,10 @@ public class StudentMyRequestsController {
             @RequestParam(required = false) Integer subjectId,
             @RequestParam(required = false) String search,
             @RequestParam(defaultValue = "1") Integer page,
-            @RequestParam(defaultValue = "10") Integer size,
-            HttpServletRequest request) {
+            @RequestParam(defaultValue = "10") Integer size) {
         try {
-            HttpSession session = request.getSession(false);
-            if (session == null || session.getAttribute("CTX") == null) {
-                return ResponseEntity.status(401).body(Map.of("message", "No active session"));
-            }
-
-            UserContext ctx = (UserContext) session.getAttribute("CTX");
+            UserContext ctx = UserContextHolder.getContext();
             Integer userId = ctx.getUserId();
-
-            if (userId == null) {
-                return ResponseEntity.status(401).body(Map.of("message", "No active session"));
-            }
 
             if (page < 1) {
                 return ResponseEntity.badRequest().body(Map.of("message", "Page must be >= 1"));
@@ -75,21 +64,10 @@ public class StudentMyRequestsController {
     }
 
     @GetMapping("/chips")
-    public ResponseEntity<?> getMyRequestsChips(
-            @RequestParam(required = false) Integer periodId,
-            HttpServletRequest request) {
+    public ResponseEntity<?> getMyRequestsChips(@RequestParam(required = false) Integer periodId) {
         try {
-            HttpSession session = request.getSession(false);
-            if (session == null || session.getAttribute("CTX") == null) {
-                return ResponseEntity.status(401).body(Map.of("message", "No active session"));
-            }
-
-            UserContext ctx = (UserContext) session.getAttribute("CTX");
+            UserContext ctx = UserContextHolder.getContext();
             Integer userId = ctx.getUserId();
-
-            if (userId == null) {
-                return ResponseEntity.status(401).body(Map.of("message", "No active session"));
-            }
 
             if (periodId != null && periodId <= 0) {
                 return ResponseEntity.badRequest().body(Map.of("message", "Invalid periodId parameter"));
@@ -104,21 +82,11 @@ public class StudentMyRequestsController {
     }
 
     @GetMapping("/summary")
-    public ResponseEntity<?> getMyRequestsSummary(
-            @RequestParam(required = false) Integer periodId,
-            HttpServletRequest request) {
+    public ResponseEntity<?> getMyRequestsSummary(@RequestParam(required = false) Integer periodId) {
         try {
-            HttpSession session = request.getSession(false);
-            if (session == null || session.getAttribute("CTX") == null) {
-                return ResponseEntity.status(401).body(Map.of("message", "No active session"));
-            }
-
-            UserContext ctx = (UserContext) session.getAttribute("CTX");
+            UserContext ctx = UserContextHolder.getContext();
             Integer userId = ctx.getUserId();
 
-            if (userId == null) {
-                return ResponseEntity.status(401).body(Map.of("message", "No active session"));
-            }
 
             if (periodId != null && periodId <= 0) {
                 return ResponseEntity.badRequest().body(Map.of("message", "Invalid periodId parameter"));

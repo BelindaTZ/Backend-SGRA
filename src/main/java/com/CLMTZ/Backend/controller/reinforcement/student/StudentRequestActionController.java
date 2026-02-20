@@ -1,10 +1,9 @@
 package com.CLMTZ.Backend.controller.reinforcement.student;
 
+import com.CLMTZ.Backend.config.UserContextHolder;
 import com.CLMTZ.Backend.dto.reinforcement.student.StudentCancelRequestResponseDTO;
 import com.CLMTZ.Backend.dto.security.session.UserContext;
 import com.CLMTZ.Backend.service.reinforcement.student.StudentRequestActionService;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,21 +20,11 @@ public class StudentRequestActionController {
     }
 
     @PutMapping("/{requestId}/cancel")
-    public ResponseEntity<?> cancelRequest(
-            @PathVariable Integer requestId,
-            HttpServletRequest request) {
+    public ResponseEntity<?> cancelRequest(@PathVariable Integer requestId) {
         try {
-            HttpSession session = request.getSession(false);
-            if (session == null || session.getAttribute("CTX") == null) {
-                return ResponseEntity.status(401).body(Map.of("message", "No active session"));
-            }
-
-            UserContext ctx = (UserContext) session.getAttribute("CTX");
+            UserContext ctx = UserContextHolder.getContext();
             Integer userId = ctx.getUserId();
 
-            if (userId == null) {
-                return ResponseEntity.status(401).body(Map.of("message", "No active session"));
-            }
 
             if (requestId == null || requestId <= 0) {
                 return ResponseEntity.badRequest().body(Map.of("message", "Invalid requestId parameter"));

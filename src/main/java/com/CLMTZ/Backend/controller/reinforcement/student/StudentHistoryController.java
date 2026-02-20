@@ -1,11 +1,10 @@
 package com.CLMTZ.Backend.controller.reinforcement.student;
 
+import com.CLMTZ.Backend.config.UserContextHolder;
 import com.CLMTZ.Backend.dto.reinforcement.student.StudentHistoryRequestsPageDTO;
 import com.CLMTZ.Backend.dto.reinforcement.student.StudentHistorySessionsPageDTO;
 import com.CLMTZ.Backend.dto.security.session.UserContext;
 import com.CLMTZ.Backend.service.reinforcement.student.StudentHistoryService;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,20 +25,10 @@ public class StudentHistoryController {
             @RequestParam(required = false) Integer periodId,
             @RequestParam(required = false) Integer statusId,
             @RequestParam(defaultValue = "1") Integer page,
-            @RequestParam(defaultValue = "10") Integer size,
-            HttpServletRequest request) {
+            @RequestParam(defaultValue = "10") Integer size) {
         try {
-            HttpSession session = request.getSession(false);
-            if (session == null || session.getAttribute("CTX") == null) {
-                return ResponseEntity.status(401).body(Map.of("message", "No active session"));
-            }
-
-            UserContext ctx = (UserContext) session.getAttribute("CTX");
+            UserContext ctx = UserContextHolder.getContext();
             Integer userId = ctx.getUserId();
-
-            if (userId == null) {
-                return ResponseEntity.status(401).body(Map.of("message", "No active session"));
-            }
 
             if (page < 1) {
                 return ResponseEntity.badRequest().body(Map.of("message", "Page must be greater than or equal to 1"));
@@ -66,20 +55,11 @@ public class StudentHistoryController {
     public ResponseEntity<?> getPreviousSessions(
             @RequestParam(defaultValue = "false") Boolean onlyAttended,
             @RequestParam(defaultValue = "1") Integer page,
-            @RequestParam(defaultValue = "10") Integer size,
-            HttpServletRequest request) {
+            @RequestParam(defaultValue = "10") Integer size) {
         try {
-            HttpSession session = request.getSession(false);
-            if (session == null || session.getAttribute("CTX") == null) {
-                return ResponseEntity.status(401).body(Map.of("message", "No active session"));
-            }
-
-            UserContext ctx = (UserContext) session.getAttribute("CTX");
+            UserContext ctx = UserContextHolder.getContext();
             Integer userId = ctx.getUserId();
 
-            if (userId == null) {
-                return ResponseEntity.status(401).body(Map.of("message", "No active session"));
-            }
 
             if (page < 1) {
                 return ResponseEntity.badRequest().body(Map.of("message", "Page must be greater than or equal to 1"));

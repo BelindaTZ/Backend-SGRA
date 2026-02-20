@@ -1,10 +1,9 @@
 package com.CLMTZ.Backend.controller.reinforcement.student;
 
+import com.CLMTZ.Backend.config.UserContextHolder;
 import com.CLMTZ.Backend.dto.reinforcement.student.StudentDashboardDTO;
 import com.CLMTZ.Backend.dto.security.session.UserContext;
 import com.CLMTZ.Backend.service.reinforcement.student.StudentDashboardService;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,21 +20,11 @@ public class StudentDashboardController {
     }
 
     @GetMapping
-    public ResponseEntity<?> getDashboard(
-            @RequestParam(required = false) Integer periodId,
-            HttpServletRequest request) {
+    public ResponseEntity<?> getDashboard(@RequestParam(required = false) Integer periodId) {
         try {
-            HttpSession session = request.getSession(false);
-            if (session == null || session.getAttribute("CTX") == null) {
-                return ResponseEntity.status(401).body(Map.of("message", "No active session"));
-            }
-
-            UserContext ctx = (UserContext) session.getAttribute("CTX");
+            UserContext ctx = UserContextHolder.getContext();
             Integer userId = ctx.getUserId();
 
-            if (userId == null) {
-                return ResponseEntity.status(401).body(Map.of("message", "No active session"));
-            }
 
             if (periodId != null && periodId <= 0) {
                 return ResponseEntity.badRequest().body(Map.of("message", "Invalid periodId parameter"));

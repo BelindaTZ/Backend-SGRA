@@ -1,13 +1,12 @@
 package com.CLMTZ.Backend.controller.reinforcement.student;
 
+import com.CLMTZ.Backend.config.UserContextHolder;
 import com.CLMTZ.Backend.dto.reinforcement.student.StudentRequestCreateRequestDTO;
 import com.CLMTZ.Backend.dto.reinforcement.student.StudentRequestCreateResponseDTO;
 import com.CLMTZ.Backend.dto.reinforcement.student.StudentRequestPreviewRequestDTO;
 import com.CLMTZ.Backend.dto.reinforcement.student.StudentRequestPreviewResponseDTO;
 import com.CLMTZ.Backend.dto.security.session.UserContext;
 import com.CLMTZ.Backend.service.reinforcement.student.StudentRequestService;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,13 +23,8 @@ public class StudentRequestController {
     }
 
     @PostMapping("/preview")
-    public ResponseEntity<?> preview(@RequestBody StudentRequestPreviewRequestDTO req, HttpServletRequest request) {
+    public ResponseEntity<?> preview(@RequestBody StudentRequestPreviewRequestDTO req) {
         try {
-            HttpSession session = request.getSession(false);
-            if (session == null || session.getAttribute("CTX") == null) {
-                return ResponseEntity.status(401).body(Map.of("message", "No active session"));
-            }
-
             if (req.getSyllabusId() == null || req.getSyllabusId() <= 0) {
                 return ResponseEntity.badRequest().body(Map.of("message", "Invalid syllabusId parameter"));
             }
@@ -58,19 +52,11 @@ public class StudentRequestController {
     }
 
     @PostMapping
-    public ResponseEntity<?> create(@RequestBody StudentRequestCreateRequestDTO req, HttpServletRequest request) {
+    public ResponseEntity<?> create(@RequestBody StudentRequestCreateRequestDTO req) {
         try {
-            HttpSession session = request.getSession(false);
-            if (session == null || session.getAttribute("CTX") == null) {
-                return ResponseEntity.status(401).body(Map.of("message", "No active session"));
-            }
-
-            UserContext ctx = (UserContext) session.getAttribute("CTX");
+            UserContext ctx = UserContextHolder.getContext();
             Integer userId = ctx.getUserId();
 
-            if (userId == null) {
-                return ResponseEntity.status(401).body(Map.of("message", "No active session"));
-            }
 
             if (req.getSyllabusId() == null || req.getSyllabusId() <= 0) {
                 return ResponseEntity.badRequest().body(Map.of("message", "Invalid syllabusId parameter"));
