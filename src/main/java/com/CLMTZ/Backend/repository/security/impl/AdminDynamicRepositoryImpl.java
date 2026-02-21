@@ -4,8 +4,6 @@ import com.CLMTZ.Backend.config.DynamicDataSourceService;
 import com.CLMTZ.Backend.dto.security.SpResponseDTO;
 import com.CLMTZ.Backend.dto.security.Response.RoleListManagementDTO;
 import com.CLMTZ.Backend.dto.security.Response.RoleListManagementResponseDTO;
-import com.CLMTZ.Backend.dto.security.Response.UserListManagementDTO;
-import com.CLMTZ.Backend.dto.security.Response.UserListManagementResponseDTO;
 import com.CLMTZ.Backend.repository.security.IAdminDynamicRepository;
 
 import jakarta.persistence.EntityManager;
@@ -19,7 +17,6 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcCall;
 import org.springframework.stereotype.Repository;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -38,32 +35,6 @@ public class AdminDynamicRepositoryImpl implements IAdminDynamicRepository {
     }
 
     // ==================== USUARIOS ====================
-
-    @Override
-    public List<UserListManagementResponseDTO> listUsersManagement(String filterUser, LocalDate date, Boolean state) {
-        MapSqlParameterSource params = new MapSqlParameterSource()
-                .addValue("p_filtro_usuario", filterUser)
-                .addValue("p_fecha", date)
-                .addValue("p_estado", state);
-
-        List<UserListManagementResponseDTO> results = new ArrayList<>();
-
-        getJdbcTemplate().query(
-                "SELECT * FROM seguridad.fn_sl_gusuarios(:p_filtro_usuario, :p_fecha, :p_estado)",
-                params,
-                rs -> {
-                    UserListManagementDTO dto = new UserListManagementDTO();
-                    dto.setIdgu(rs.getInt("idgu"));
-                    dto.setUsuariogu(rs.getString("usuariogu"));
-                    dto.setRolesasignadosgu(rs.getLong("rolesasignadosgu"));
-                    dto.setEstadogu(rs.getString("estadogu"));
-                    dto.setFechacreaciongu(rs.getDate("fechacreaciongu") != null
-                            ? rs.getDate("fechacreaciongu").toLocalDate() : null);
-                    results.add(dto);
-                });
-
-        return results;
-    }
 
     @Override
     public SpResponseDTO createGUser(String user, String password, String roles) {
@@ -88,7 +59,7 @@ public class AdminDynamicRepositoryImpl implements IAdminDynamicRepository {
     }
 
     @Override
-    public SpResponseDTO updateGUser(Integer userId, String user, String password) {
+    public SpResponseDTO updateGUser(Integer userId, String user, String password, String roles) {
         return executeStoredProcedure("seguridad", "sp_up_gusuario",
                 new MapSqlParameterSource()
                         .addValue("p_idgusuario", userId)

@@ -2,9 +2,7 @@ package com.CLMTZ.Backend.repository.security;
 
 import com.CLMTZ.Backend.dto.security.SpResponseDTO;
 import com.CLMTZ.Backend.dto.security.Response.RoleListManagementResponseDTO;
-import com.CLMTZ.Backend.dto.security.Response.UserListManagementResponseDTO;
 
-import java.time.LocalDate;
 import java.util.List;
 
 /**
@@ -19,7 +17,7 @@ public interface IAdminDynamicRepository {
      * Lista usuarios de gestión con filtros.
      * Ejecuta: seguridad.fn_sl_gusuarios
      */
-    List<UserListManagementResponseDTO> listUsersManagement(String filterUser, LocalDate date, Boolean state);
+    // List<UserListManagementResponseDTO> listUsersManagement(String filterUser, LocalDate date, Boolean state);
 
     /**
      * Crea un usuario de gestión.
@@ -31,7 +29,7 @@ public interface IAdminDynamicRepository {
      * Actualiza un usuario de gestión.
      * Ejecuta: seguridad.sp_up_gusuario
      */
-    SpResponseDTO updateGUser(Integer userId, String user, String password);
+    SpResponseDTO updateGUser(Integer userId, String user, String password, String roles);
 
     // ==================== ROLES ====================
 

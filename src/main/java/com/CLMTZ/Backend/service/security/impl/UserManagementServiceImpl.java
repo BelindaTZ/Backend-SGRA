@@ -12,6 +12,7 @@ import com.CLMTZ.Backend.dto.security.UserManagementDTO;
 import com.CLMTZ.Backend.dto.security.Response.UserListManagementResponseDTO;
 import com.CLMTZ.Backend.model.security.UserManagement;
 import com.CLMTZ.Backend.repository.security.IUserManagementRepository;
+import com.CLMTZ.Backend.repository.security.icustom.IUserManagementCustomRepository;
 import com.CLMTZ.Backend.repository.security.IAdminDynamicRepository;
 import com.CLMTZ.Backend.service.security.IUserManagementService;
 
@@ -23,6 +24,7 @@ import lombok.RequiredArgsConstructor;
 public class UserManagementServiceImpl implements IUserManagementService {
 
     private final IUserManagementRepository userManagementRepo;
+    private final IUserManagementCustomRepository userManagementCustRepo;
     private final IAdminDynamicRepository adminDynamicRepo;
 
     @Override
@@ -58,7 +60,7 @@ public class UserManagementServiceImpl implements IUserManagementService {
     @Transactional
     public List<UserListManagementResponseDTO> listUserListManagement(String filterUser, LocalDate date, Boolean state){
         try {
-            return adminDynamicRepo.listUsersManagement(filterUser, date, state);
+            return userManagementCustRepo.listUsersManagement(filterUser, date, state);
         } catch (Exception e) {
             throw new RuntimeException("Error al listar a los usuarios" + e.getMessage());
         }  
@@ -84,8 +86,15 @@ public class UserManagementServiceImpl implements IUserManagementService {
     @Transactional
     public SpResponseDTO updateGUser(UserManagementDTO userRequest){
         try {
-            return adminDynamicRepo.updateGUser(userRequest.getUserGId(), userRequest.getUser(), userRequest.getPassword());
-            } catch (Exception e) {
+            String roles = "";
+            if(userRequest.getRoles() != null && !userRequest.getRoles().isEmpty()) {
+                roles = userRequest.getRoles().stream().
+                map(String::valueOf).collect(Collectors.joining(","));
+            }
+
+            return adminDynamicRepo.updateGUser(userRequest.getUserGId(), userRequest.getUser(), userRequest.getPassword(), roles);
+
+        } catch (Exception e) {
             return new SpResponseDTO("Error editar al usuarios" + e.getMessage(), false);
         }  
     }
