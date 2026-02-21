@@ -10,4 +10,5 @@ public interface IPeriodService {
     PeriodDTO save(PeriodDTO dto);
     PeriodDTO update(Integer id, PeriodDTO dto);
     void deleteById(Integer id);
+    List<String> Period(List<PeriodDTO> dtos);
 }

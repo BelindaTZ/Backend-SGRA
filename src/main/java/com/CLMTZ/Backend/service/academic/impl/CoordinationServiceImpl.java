@@ -1,5 +1,6 @@
 package com.CLMTZ.Backend.service.academic.impl;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -10,13 +11,14 @@ import org.springframework.stereotype.Service;
 import com.CLMTZ.Backend.dto.academic.CoordinationDTO;
 import com.CLMTZ.Backend.dto.academic.StudentLoadDTO;
 import com.CLMTZ.Backend.dto.academic.TeachingDTO;
+import com.CLMTZ.Backend.dto.academic.PeriodDTO;
+import com.CLMTZ.Backend.dto.academic.SyllabiDTO;
 import com.CLMTZ.Backend.model.academic.Coordination;
 import com.CLMTZ.Backend.repository.academic.ICareerRepository;
 import com.CLMTZ.Backend.repository.academic.ICoordinationRepository;
 import com.CLMTZ.Backend.repository.academic.IDataLoadRepository;
 import com.CLMTZ.Backend.repository.general.IUserRepository;
 import com.CLMTZ.Backend.service.academic.ICoordinationService;
-
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.ParameterMode; // Importante
 import jakarta.persistence.PersistenceContext;
@@ -25,6 +27,7 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
+
 public class CoordinationServiceImpl implements ICoordinationService {
 
     private final ICoordinationRepository repository;
@@ -263,9 +266,9 @@ public class CoordinationServiceImpl implements ICoordinationService {
     // --- MÉTODO PRIVADO PARA SP DE DOCENTES ---
     private String ejecutarCargaDocenteSP(String cedula, String nom, String ape, String correo,
             String dir, String tel, Integer idMod, Integer idGen, Integer idPer,
-        Integer idAsig, Integer idPar) {
+            Integer idAsig, Integer idPar) {
 
-    StoredProcedureQuery query = entityManager.createStoredProcedureQuery("academico.sp_in_carga_docente");
+        StoredProcedureQuery query = entityManager.createStoredProcedureQuery("academico.sp_in_carga_docente");
 
         // REGISTRO PARÁMETROS IN
         query.registerStoredProcedureParameter("p_identificador", String.class, ParameterMode.IN);
@@ -304,6 +307,145 @@ public class CoordinationServiceImpl implements ICoordinationService {
         Boolean exito = (Boolean) query.getOutputParameterValue("p_exito");
 
         return Boolean.TRUE.equals(exito) ? "OK" : "FALLÓ SP: " + mensajeRetorno;
+    }
+
+    // --- NUEVOS MÉTODOS PARA OTROS SP ---
+
+    // 1. Estructura Universitaria (Carrera)
+    private String ejecutarCargaCarreraSP(String nombre, String codigo, Integer idFacultad) {
+        StoredProcedureQuery query = entityManager.createStoredProcedureQuery("academico.sp_in_carga_carrera");
+        query.registerStoredProcedureParameter("p_nombre", String.class, ParameterMode.IN);
+        query.registerStoredProcedureParameter("p_codigo", String.class, ParameterMode.IN);
+        query.registerStoredProcedureParameter("p_idfacultad", Integer.class, ParameterMode.IN);
+        query.registerStoredProcedureParameter("p_mensaje", String.class, ParameterMode.OUT);
+        query.registerStoredProcedureParameter("p_exito", Boolean.class, ParameterMode.OUT);
+        query.setParameter("p_nombre", nombre);
+        query.setParameter("p_codigo", codigo);
+        query.setParameter("p_idfacultad", idFacultad);
+        query.execute();
+        String mensaje = (String) query.getOutputParameterValue("p_mensaje");
+        Boolean exito = (Boolean) query.getOutputParameterValue("p_exito");
+        return Boolean.TRUE.equals(exito) ? "OK" : "FALLÓ SP: " + mensaje;
+    }
+
+    // 2. Malla Curricular (Asignatura)
+    private String ejecutarCargaAsignaturaSP(String nombre, String codigo, Integer idCarrera, Integer nivel) {
+        StoredProcedureQuery query = entityManager.createStoredProcedureQuery("academico.sp_in_carga_asignatura");
+        query.registerStoredProcedureParameter("p_nombre", String.class, ParameterMode.IN);
+        query.registerStoredProcedureParameter("p_codigo", String.class, ParameterMode.IN);
+        query.registerStoredProcedureParameter("p_idcarrera", Integer.class, ParameterMode.IN);
+        query.registerStoredProcedureParameter("p_nivel", Integer.class, ParameterMode.IN);
+        query.registerStoredProcedureParameter("p_mensaje", String.class, ParameterMode.OUT);
+        query.registerStoredProcedureParameter("p_exito", Boolean.class, ParameterMode.OUT);
+        query.setParameter("p_nombre", nombre);
+        query.setParameter("p_codigo", codigo);
+        query.setParameter("p_idcarrera", idCarrera);
+        query.setParameter("p_nivel", nivel);
+        query.execute();
+        String mensaje = (String) query.getOutputParameterValue("p_mensaje");
+        Boolean exito = (Boolean) query.getOutputParameterValue("p_exito");
+        return Boolean.TRUE.equals(exito) ? "OK" : "FALLÓ SP: " + mensaje;
+    }
+
+    // 3. Periodos
+    private String ejecutarCargaPeriodoSP(String nombre, String codigo, LocalDate fechaInicio, LocalDate fechaFin) {
+        StoredProcedureQuery query = entityManager.createStoredProcedureQuery("academico.sp_in_carga_periodo");
+        query.registerStoredProcedureParameter("p_nombre", String.class, ParameterMode.IN);
+        query.registerStoredProcedureParameter("p_codigo", String.class, ParameterMode.IN);
+        query.registerStoredProcedureParameter("p_fechainicio", LocalDate.class, ParameterMode.IN);
+        query.registerStoredProcedureParameter("p_fechafin", LocalDate.class, ParameterMode.IN);
+        query.registerStoredProcedureParameter("p_mensaje", String.class, ParameterMode.OUT);
+        query.registerStoredProcedureParameter("p_exito", Boolean.class, ParameterMode.OUT);
+        query.setParameter("p_nombre", nombre);
+        query.setParameter("p_codigo", codigo);
+        query.setParameter("p_fechainicio", fechaInicio);
+        query.setParameter("p_fechafin", fechaFin);
+        query.execute();
+        String mensaje = (String) query.getOutputParameterValue("p_mensaje");
+        Boolean exito = (Boolean) query.getOutputParameterValue("p_exito");
+        return Boolean.TRUE.equals(exito) ? "OK" : "FALLÓ SP: " + mensaje;
+    }
+
+    // 4. Materias del Estudiante (Detalle Matrícula)
+    private String ejecutarCargaDetalleMatriculaSP(String cedula, Integer idAsignatura, Integer idParalelo, Integer idPeriodo) {
+        StoredProcedureQuery query = entityManager.createStoredProcedureQuery("academico.sp_in_carga_detalle_matricula");
+        query.registerStoredProcedureParameter("p_identificador", String.class, ParameterMode.IN);
+        query.registerStoredProcedureParameter("p_idasignatura", Integer.class, ParameterMode.IN);
+        query.registerStoredProcedureParameter("p_idparalelo", Integer.class, ParameterMode.IN);
+        query.registerStoredProcedureParameter("p_idperiodo", Integer.class, ParameterMode.IN);
+        query.registerStoredProcedureParameter("p_mensaje", String.class, ParameterMode.OUT);
+        query.registerStoredProcedureParameter("p_exito", Boolean.class, ParameterMode.OUT);
+        query.setParameter("p_identificador", cedula);
+        query.setParameter("p_idasignatura", idAsignatura);
+        query.setParameter("p_idparalelo", idParalelo);
+        query.setParameter("p_idperiodo", idPeriodo);
+        query.execute();
+        String mensaje = (String) query.getOutputParameterValue("p_mensaje");
+        Boolean exito = (Boolean) query.getOutputParameterValue("p_exito");
+        return Boolean.TRUE.equals(exito) ? "OK" : "FALLÓ SP: " + mensaje;
+    }
+
+    // 5. Horarios de Clases
+    private String ejecutarCargaHorarioClaseSP(Integer idAsignatura, Integer idParalelo, Integer idPeriodo, String dia, String horaInicio, String horaFin) {
+        StoredProcedureQuery query = entityManager.createStoredProcedureQuery("academico.sp_in_carga_horarioclase");
+        query.registerStoredProcedureParameter("p_idasignatura", Integer.class, ParameterMode.IN);
+        query.registerStoredProcedureParameter("p_idparalelo", Integer.class, ParameterMode.IN);
+        query.registerStoredProcedureParameter("p_idperiodo", Integer.class, ParameterMode.IN);
+        query.registerStoredProcedureParameter("p_dia", String.class, ParameterMode.IN);
+        query.registerStoredProcedureParameter("p_horainicio", String.class, ParameterMode.IN);
+        query.registerStoredProcedureParameter("p_horafin", String.class, ParameterMode.IN);
+        query.registerStoredProcedureParameter("p_mensaje", String.class, ParameterMode.OUT);
+        query.registerStoredProcedureParameter("p_exito", Boolean.class, ParameterMode.OUT);
+        query.setParameter("p_idasignatura", idAsignatura);
+        query.setParameter("p_idparalelo", idParalelo);
+        query.setParameter("p_idperiodo", idPeriodo);
+        query.setParameter("p_dia", dia);
+        query.setParameter("p_horainicio", horaInicio);
+        query.setParameter("p_horafin", horaFin);
+        query.execute();
+        String mensaje = (String) query.getOutputParameterValue("p_mensaje");
+        Boolean exito = (Boolean) query.getOutputParameterValue("p_exito");
+        return Boolean.TRUE.equals(exito) ? "OK" : "FALLÓ SP: " + mensaje;
+    }
+
+    // 6. Syllabus/Temarios
+    private String ejecutarCargaTemarioSP(Integer idAsignatura, Integer idPeriodo, String descripcion) {
+        StoredProcedureQuery query = entityManager.createStoredProcedureQuery("academico.sp_in_carga_temario");
+        query.registerStoredProcedureParameter("p_idasignatura", Integer.class, ParameterMode.IN);
+        query.registerStoredProcedureParameter("p_idperiodo", Integer.class, ParameterMode.IN);
+        query.registerStoredProcedureParameter("p_descripcion", String.class, ParameterMode.IN);
+        query.registerStoredProcedureParameter("p_mensaje", String.class, ParameterMode.OUT);
+        query.registerStoredProcedureParameter("p_exito", Boolean.class, ParameterMode.OUT);
+        query.setParameter("p_idasignatura", idAsignatura);
+        query.setParameter("p_idperiodo", idPeriodo);
+        query.setParameter("p_descripcion", descripcion);
+        query.execute();
+        String mensaje = (String) query.getOutputParameterValue("p_mensaje");
+        Boolean exito = (Boolean) query.getOutputParameterValue("p_exito");
+        return Boolean.TRUE.equals(exito) ? "OK" : "FALLÓ SP: " + mensaje;
+    }
+
+    @Override
+    public List<String> Period(List<PeriodDTO> dtos) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'Period'");
+    }
+
+    @Override
+    public List<String> uploadPeriods(List<PeriodDTO> dtos) {
+        List<String> resultados = new ArrayList<>();
+
+        for (PeriodDTO fila : dtos) {
+            try {
+                String resultadoSP = ejecutarCargaPeriodoSP(
+                        fila.getPeriod(), "COD-" + fila.getPeriodId(), fila.getStartDate(), fila.getEndDate());
+                resultados.add("Periodo " + fila.getPeriod() + ": " + resultadoSP);
+            } catch (Exception e) {
+                resultados.add("Periodo " + fila.getPeriod() + ": ERROR (" + e.getMessage() + ")");
+                e.printStackTrace();
+            }
+        }
+        return resultados;
     }
 
 }

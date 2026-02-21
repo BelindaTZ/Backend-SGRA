@@ -103,4 +103,5 @@ public class CoordinationController {
         message = "Formato inválido. Archivo: " + file.getOriginalFilename() + ", tipo: " + file.getContentType();
         return ResponseEntity.badRequest().body(message);
     }
+    
 }

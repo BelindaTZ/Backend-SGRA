@@ -19,7 +19,7 @@ public interface IDataLoadRepository extends JpaRepository<Students, Integer> {
     @Query(value = "SELECT general.fn_vlboolean_disponibilidad_correo(:correo, :cedula)", nativeQuery = true)
     boolean validarCorreoDisponible(@Param("correo") String correo, @Param("cedula") String cedula);
     
-@Query(value = "SELECT academico.fn_vlinteger_existe_asignatura_periodo(:asignatura, :idCarrera)", nativeQuery = true)
+    @Query(value = "SELECT academico.fn_vlinteger_existe_asignatura_periodo(:asignatura, :idCarrera)", nativeQuery = true)
     Integer obtenerIdAsignatura(@Param("asignatura") String asignatura, @Param("idCarrera") Integer idCarrera);
 
     // 2. Obtener ID del Paralelo
@@ -36,5 +36,12 @@ public interface IDataLoadRepository extends JpaRepository<Students, Integer> {
         @Param("idPeriodo") Integer idPeriodo, 
         @Param("idParalelo") Integer idParalelo
     );
+
+    @Query(value = "SELECT academico.fn_sl_id_franjahoraria(:horaInicio, :horaFin)", nativeQuery = true)
+    Integer obtenerIdFranjaHoraria(@Param("horaInicio") java.time.LocalTime horaInicio, @Param("horaFin") java.time.LocalTime horaFin);
+
+    // 2. Validar si existe el tema (Llama a: academico.fn_vlboolean_existe_tema)
+    @Query(value = "SELECT academico.fn_vlboolean_existe_tema(:nombreTema, :idAsignatura)", nativeQuery = true)
+    Boolean validarExisteTema(@Param("nombreTema") String nombreTema, @Param("idAsignatura") Integer idAsignatura);
 
 }

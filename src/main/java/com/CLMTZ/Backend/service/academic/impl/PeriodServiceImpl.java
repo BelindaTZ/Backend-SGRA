@@ -58,4 +58,12 @@ public class PeriodServiceImpl implements IPeriodService {
         dto.setState(e.getState());
         return dto;
     }
+
+    @Override
+    public List<String> Period(List<PeriodDTO> dtos) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'Period'");
+    }
+
+    
 }
