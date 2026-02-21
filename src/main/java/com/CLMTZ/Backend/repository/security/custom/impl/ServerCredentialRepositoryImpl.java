@@ -1,7 +1,8 @@
-package com.CLMTZ.Backend.repository.security.impl;
+package com.CLMTZ.Backend.repository.security.custom.impl;
 
 import com.CLMTZ.Backend.dto.security.Request.ServerCredentialRequestDTO;
-import com.CLMTZ.Backend.repository.security.IServerCredentialRepository;
+import com.CLMTZ.Backend.repository.security.custom.IServerCredentialRepository;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;

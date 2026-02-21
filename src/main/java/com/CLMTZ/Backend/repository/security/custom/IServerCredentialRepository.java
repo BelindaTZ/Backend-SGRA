@@ -1,4 +1,4 @@
-package com.CLMTZ.Backend.repository.security;
+package com.CLMTZ.Backend.repository.security.custom;
 
 import java.util.Optional;
 
