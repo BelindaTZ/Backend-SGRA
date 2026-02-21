@@ -2,8 +2,6 @@ package com.CLMTZ.Backend.repository.security.impl;
 
 import com.CLMTZ.Backend.config.DynamicDataSourceService;
 import com.CLMTZ.Backend.dto.security.SpResponseDTO;
-import com.CLMTZ.Backend.dto.security.Response.RoleListManagementDTO;
-import com.CLMTZ.Backend.dto.security.Response.RoleListManagementResponseDTO;
 import com.CLMTZ.Backend.repository.security.IAdminDynamicRepository;
 
 import jakarta.persistence.EntityManager;
@@ -17,8 +15,6 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcCall;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 @Repository
@@ -69,31 +65,31 @@ public class AdminDynamicRepositoryImpl implements IAdminDynamicRepository {
 
     // ==================== ROLES ====================
 
-    @Override
-    public List<RoleListManagementResponseDTO> listRoles(String filter, Boolean state) {
-        MapSqlParameterSource params = new MapSqlParameterSource()
-                .addValue("p_filtro_texto", filter != null ? filter : "")
-                .addValue("p_estado", state != null ? state : true);
+    // @Override
+    // public List<RoleListManagementResponseDTO01> listRoles(String filter, Boolean state) {
+    //     MapSqlParameterSource params = new MapSqlParameterSource()
+    //             .addValue("p_filtro_texto", filter != null ? filter : "")
+    //             .addValue("p_estado", state != null ? state : true);
 
-        List<RoleListManagementResponseDTO> results = new ArrayList<>();
+    //     List<RoleListManagementResponseDTO01> results = new ArrayList<>();
 
-        getJdbcTemplate().query(
-                "SELECT * FROM seguridad.fn_sl_groles(:p_filtro_texto, :p_estado)",
-                params,
-                rs -> {
-                    RoleListManagementDTO dto = new RoleListManagementDTO();
-                    dto.setIdg(rs.getInt("idg"));
-                    dto.setNombreg(rs.getString("nombreg"));
-                    dto.setDescripciong(rs.getString("descripciong"));
-                    dto.setEstadog(rs.getString("estadog"));
-                    dto.setPermisosg(rs.getLong("permisosg"));
-                    dto.setFechacreaciong(rs.getDate("fechacreaciong") != null
-                            ? rs.getDate("fechacreaciong").toLocalDate() : null);
-                    results.add(dto);
-                });
+    //     getJdbcTemplate().query(
+    //             "SELECT * FROM seguridad.fn_sl_groles(:p_filtro_texto, :p_estado)",
+    //             params,
+    //             rs -> {
+    //                 RoleListManagementResponseDTO dto = new RoleListManagementResponseDTO();
+    //                 dto.setIdg(rs.getInt("idg"));
+    //                 dto.setNombreg(rs.getString("nombreg"));
+    //                 dto.setDescripciong(rs.getString("descripciong"));
+    //                 dto.setEstadog(rs.getString("estadog"));
+    //                 dto.setPermisosg(rs.getLong("permisosg"));
+    //                 dto.setFechacreaciong(rs.getDate("fechacreaciong") != null
+    //                         ? rs.getDate("fechacreaciong").toLocalDate() : null);
+    //                 results.add(dto);
+    //             });
 
-        return results;
-    }
+    //     return results;
+    // }
 
     @Override
     public SpResponseDTO createGRole(String role, String description) {

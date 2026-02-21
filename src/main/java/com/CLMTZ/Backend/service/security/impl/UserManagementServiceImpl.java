@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.CLMTZ.Backend.dto.security.SpResponseDTO;
 import com.CLMTZ.Backend.dto.security.UserManagementDTO;
@@ -16,7 +17,6 @@ import com.CLMTZ.Backend.repository.security.icustom.IUserManagementCustomReposi
 import com.CLMTZ.Backend.repository.security.IAdminDynamicRepository;
 import com.CLMTZ.Backend.service.security.IUserManagementService;
 
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -57,7 +57,7 @@ public class UserManagementServiceImpl implements IUserManagementService {
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public List<UserListManagementResponseDTO> listUserListManagement(String filterUser, LocalDate date, Boolean state){
         try {
             return userManagementCustRepo.listUsersManagement(filterUser, date, state);

@@ -14,6 +14,6 @@ public interface IRoleManagementService {
 
     SpResponseDTO createGRole(RoleManagementDTO roleRequest);
     SpResponseDTO updateGRole(RoleManagementDTO rolRequest);
-    List<RoleListManagementResponseDTO> listRoles(String filter, Boolean state);
+    List<RoleListManagementResponseDTO> listRolesManagement(String filter, Boolean state);
     List<RoleManagementDTO> listRoleNames();
 }

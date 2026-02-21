@@ -2,14 +2,19 @@ package com.CLMTZ.Backend.service.security.impl;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
+import javax.management.RuntimeErrorException;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.CLMTZ.Backend.dto.security.RoleManagementDTO;
 import com.CLMTZ.Backend.dto.security.SpResponseDTO;
 import com.CLMTZ.Backend.dto.security.Response.RoleListManagementResponseDTO;
+import com.CLMTZ.Backend.dto.security.Response.RoleListManagementResponseDTO01;
 import com.CLMTZ.Backend.model.security.RoleManagement;
 import com.CLMTZ.Backend.repository.security.IRoleManagementRepository;
+import com.CLMTZ.Backend.repository.security.icustom.IRoleManagementCustomRepository;
 import com.CLMTZ.Backend.repository.security.IAdminDynamicRepository;
 import com.CLMTZ.Backend.service.security.IRoleManagementService;
 
@@ -20,6 +25,7 @@ import lombok.RequiredArgsConstructor;
 public class RoleManagementServiceImpl implements IRoleManagementService {
 
     private final IRoleManagementRepository roleManagementRepo;
+    private final IRoleManagementCustomRepository roleManagementCustomRepo;
     private final IAdminDynamicRepository adminDynamicRepo;
 
     @Override
@@ -71,11 +77,15 @@ public class RoleManagementServiceImpl implements IRoleManagementService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<RoleListManagementResponseDTO> listRoles(String filter, Boolean state){
-        String textFilter = (filter == null) ? "" : filter;
-        Boolean stateFilter = (state == null) ? true : state;
+    public List<RoleListManagementResponseDTO> listRolesManagement(String filter, Boolean state){
+        try{
+            String textFilter = (filter == null) ? "" : filter;
+            Boolean stateFilter = (state == null) ? true : state;
 
-        return adminDynamicRepo.listRoles(textFilter, stateFilter);
+            return roleManagementCustomRepo.listRolesManagement(textFilter, stateFilter);
+        } catch(Exception e) {
+            throw new RuntimeException("Error al cargar el listado de usuarios" + e.getMessage());
+        }
     }
 
     @Override
