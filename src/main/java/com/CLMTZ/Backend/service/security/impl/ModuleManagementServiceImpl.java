@@ -10,6 +10,7 @@ import com.CLMTZ.Backend.dto.security.Response.MasterTableListManagementResponse
 import com.CLMTZ.Backend.dto.security.Response.ModuleListManagementResponseDTO;
 import com.CLMTZ.Backend.model.security.ModuleManagement;
 import com.CLMTZ.Backend.repository.security.IModuleManagementRepository;
+import com.CLMTZ.Backend.repository.security.custom.IModuleCustomManagementRepository;
 import com.CLMTZ.Backend.service.security.IModuleManagementService;
 import lombok.RequiredArgsConstructor;
 
@@ -18,6 +19,7 @@ import lombok.RequiredArgsConstructor;
 public class ModuleManagementServiceImpl implements IModuleManagementService {
 
     private final IModuleManagementRepository moduleManagementRepo;
+    private final IModuleCustomManagementRepository moduleManagementCustomRepo;
 
     @Override
     public List<ModuleManagementRequestDTO> findAll() { return moduleManagementRepo.findAll().stream().map(this::toDTO).collect(Collectors.toList()); }
@@ -45,18 +47,18 @@ public class ModuleManagementServiceImpl implements IModuleManagementService {
     private ModuleManagementRequestDTO toDTO(ModuleManagement e) { ModuleManagementRequestDTO d = new ModuleManagementRequestDTO(); d.setRoleGId(e.getRoleGId()); d.setModuleG(e.getModuleG()); d.setState(e.getState()); return d; }
 
     @Override
-    public List<ModuleListManagementResponseDTO> listModuleManagerment(String grole){
+    public List<ModuleListManagementResponseDTO> listModuleManagements(String grole){
         String vgrole = (grole == null) ? "" : grole;
-        return moduleManagementRepo.listModuleManagements(vgrole);
+        return moduleManagementCustomRepo.listModuleManagements(vgrole);
     }
 
     @Override
     public List<MasterTableListManagementResponseDTO> listMasterTables(){
-        return moduleManagementRepo.listMasterTables();
+        return moduleManagementCustomRepo.listMasterTables();
     }
 
     @Override
     public List<MasterDataListManagementResponseDTO> listDataMasterTables(String schemaTables){
-        return moduleManagementRepo.listDataMasterTables(schemaTables);
+        return moduleManagementCustomRepo.listDataMasterTables(schemaTables);
     }
 }

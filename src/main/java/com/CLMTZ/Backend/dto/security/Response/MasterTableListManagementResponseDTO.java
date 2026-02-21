@@ -1,7 +1,14 @@
 package com.CLMTZ.Backend.dto.security.Response;
 
-public interface MasterTableListManagementResponseDTO {
-    String getPesquematabla();
-    String getPnombre();
-    String getPdescripcion();
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class MasterTableListManagementResponseDTO {
+    private String pesquematabla;
+    private String pnombre;
+    private String pdescripcion;
 }

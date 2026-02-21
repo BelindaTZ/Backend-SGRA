@@ -6,10 +6,6 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 
-/**
- * DTO concreto para la respuesta de listado de usuarios de gestión.
- * Implementa la interfaz UserListManagementResponseDTO para compatibilidad.
- */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

@@ -13,7 +13,6 @@ import com.CLMTZ.Backend.service.security.IModuleManagementService;
 import lombok.RequiredArgsConstructor;
 
 
-
 @RestController
 @RequestMapping("/api/security/module-managements")
 @RequiredArgsConstructor
@@ -38,7 +37,7 @@ public class ModuleManagementController {
 
     @GetMapping("/list-modules-permisis")
     public ResponseEntity<List<ModuleListManagementResponseDTO>> listGModulesPermisis(@RequestParam String role) {
-        List<ModuleListManagementResponseDTO> listModules = moduleManagementSer.listModuleManagerment(role);
+        List<ModuleListManagementResponseDTO> listModules = moduleManagementSer.listModuleManagements(role);
         return ResponseEntity.ok(listModules);
     }
 

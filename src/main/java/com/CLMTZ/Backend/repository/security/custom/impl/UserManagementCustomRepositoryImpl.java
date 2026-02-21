@@ -21,7 +21,7 @@ import lombok.RequiredArgsConstructor;
 
 @Repository
 @RequiredArgsConstructor
-public class UserManagementRepositoryImpl implements IUserManagementCustomRepository{
+public class UserManagementCustomRepositoryImpl implements IUserManagementCustomRepository{
     
     @PersistenceContext
     private EntityManager entityManager;

@@ -13,7 +13,8 @@ public interface IModuleManagementService {
     ModuleManagementRequestDTO save(ModuleManagementRequestDTO dto);
     ModuleManagementRequestDTO update(Integer id, ModuleManagementRequestDTO dto);
     void deleteById(Integer id);
-    List<ModuleListManagementResponseDTO> listModuleManagerment(String role); 
+
+    List<ModuleListManagementResponseDTO> listModuleManagements(String role); 
     List<MasterTableListManagementResponseDTO> listMasterTables();
     List<MasterDataListManagementResponseDTO> listDataMasterTables(String schemaTables);
 }

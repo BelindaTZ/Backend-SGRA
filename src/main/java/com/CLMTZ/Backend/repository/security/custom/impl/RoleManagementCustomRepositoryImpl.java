@@ -20,7 +20,7 @@ import lombok.RequiredArgsConstructor;
 
 @Repository
 @RequiredArgsConstructor
-public class RoleManagementRepositoryImpl implements IRoleManagementCustomRepository{
+public class RoleManagementCustomRepositoryImpl implements IRoleManagementCustomRepository{
 
     @PersistenceContext
     private EntityManager entityManager;
