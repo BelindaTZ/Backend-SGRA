@@ -4,7 +4,8 @@ import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import com.CLMTZ.Backend.dto.security.RoleManagementDTO;
+
+import com.CLMTZ.Backend.dto.security.Request.RoleManagementRequestDTO;
 import com.CLMTZ.Backend.dto.security.Response.RoleListManagementResponseDTO;
 import com.CLMTZ.Backend.dto.security.Response.SpResponseDTO;
 import com.CLMTZ.Backend.service.security.IRoleManagementService;
@@ -20,28 +21,28 @@ public class RoleManagementController {
     private final IRoleManagementService roleManagementSer;
 
     @GetMapping
-    public ResponseEntity<List<RoleManagementDTO>> findAll() { return ResponseEntity.ok(roleManagementSer.findAll()); }
+    public ResponseEntity<List<RoleManagementRequestDTO>> findAll() { return ResponseEntity.ok(roleManagementSer.findAll()); }
 
     @GetMapping("/{id}")
-    public ResponseEntity<RoleManagementDTO> findById(@PathVariable Integer id) { return ResponseEntity.ok(roleManagementSer.findById(id)); }
+    public ResponseEntity<RoleManagementRequestDTO> findById(@PathVariable Integer id) { return ResponseEntity.ok(roleManagementSer.findById(id)); }
 
     @PostMapping
-    public ResponseEntity<RoleManagementDTO> save(@RequestBody RoleManagementDTO dto) { return new ResponseEntity<>(roleManagementSer.save(dto), HttpStatus.CREATED); }
+    public ResponseEntity<RoleManagementRequestDTO> save(@RequestBody RoleManagementRequestDTO dto) { return new ResponseEntity<>(roleManagementSer.save(dto), HttpStatus.CREATED); }
 
     @PutMapping("/{id}")
-    public ResponseEntity<RoleManagementDTO> update(@PathVariable Integer id, @RequestBody RoleManagementDTO dto) { return ResponseEntity.ok(roleManagementSer.update(id, dto)); }
+    public ResponseEntity<RoleManagementRequestDTO> update(@PathVariable Integer id, @RequestBody RoleManagementRequestDTO dto) { return ResponseEntity.ok(roleManagementSer.update(id, dto)); }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Integer id) { roleManagementSer.deleteById(id); return ResponseEntity.noContent().build(); }
 
     @PostMapping("/create-role")
-    public ResponseEntity<SpResponseDTO> createGRole(@RequestBody RoleManagementDTO requestRole) {
+    public ResponseEntity<SpResponseDTO> createGRole(@RequestBody RoleManagementRequestDTO requestRole) {
         SpResponseDTO request = roleManagementSer.createRoleManagement(requestRole);
         return ResponseEntity.ok(request);
     }
 
     @PutMapping("/update-role")
-    public ResponseEntity<SpResponseDTO> updateRoleManagement(@RequestBody RoleManagementDTO requestRole) {
+    public ResponseEntity<SpResponseDTO> updateRoleManagement(@RequestBody RoleManagementRequestDTO requestRole) {
         SpResponseDTO request = roleManagementSer.updateRoleManagement(requestRole);
         return ResponseEntity.ok(request);
     }
@@ -53,8 +54,8 @@ public class RoleManagementController {
     }
 
     @GetMapping("/list-roles-combo")
-    public ResponseEntity<List<RoleManagementDTO>> listRolesCombobox(){
-        List<RoleManagementDTO> list = roleManagementSer.listRoleNames();
+    public ResponseEntity<List<RoleManagementRequestDTO>> listRolesCombobox(){
+        List<RoleManagementRequestDTO> list = roleManagementSer.listRoleNames();
         return ResponseEntity.ok(list);
     }
 }

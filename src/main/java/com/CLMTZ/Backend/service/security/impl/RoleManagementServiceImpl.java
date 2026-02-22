@@ -6,7 +6,7 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.CLMTZ.Backend.dto.security.RoleManagementDTO;
+import com.CLMTZ.Backend.dto.security.Request.RoleManagementRequestDTO;
 import com.CLMTZ.Backend.dto.security.Response.RoleListManagementResponseDTO;
 import com.CLMTZ.Backend.dto.security.Response.SpResponseDTO;
 import com.CLMTZ.Backend.model.security.RoleManagement;
@@ -24,13 +24,13 @@ public class RoleManagementServiceImpl implements IRoleManagementService {
     private final IRoleManagementCustomRepository roleManagementCustomRepo;
 
     @Override
-    public List<RoleManagementDTO> findAll() { return roleManagementRepo.findAll().stream().map(this::toDTO).collect(Collectors.toList()); }
+    public List<RoleManagementRequestDTO> findAll() { return roleManagementRepo.findAll().stream().map(this::toDTO).collect(Collectors.toList()); }
 
     @Override
-    public RoleManagementDTO findById(Integer id) { return roleManagementRepo.findById(id).map(this::toDTO).orElseThrow(() -> new RuntimeException("RoleManagement not found with id: " + id)); }
+    public RoleManagementRequestDTO findById(Integer id) { return roleManagementRepo.findById(id).map(this::toDTO).orElseThrow(() -> new RuntimeException("RoleManagement not found with id: " + id)); }
 
     @Override
-    public RoleManagementDTO save(RoleManagementDTO dto) {
+    public RoleManagementRequestDTO save(RoleManagementRequestDTO dto) {
         RoleManagement e = new RoleManagement();
         e.setRoleG(dto.getRoleG()); e.setServerRole(dto.getServerRole()); e.setDescription(dto.getDescription());
         e.setCreatedAt(dto.getCreatedAt()); e.setState(dto.getState() != null ? dto.getState() : true);
@@ -38,7 +38,7 @@ public class RoleManagementServiceImpl implements IRoleManagementService {
     }
 
     @Override
-    public RoleManagementDTO update(Integer id, RoleManagementDTO dto) {
+    public RoleManagementRequestDTO update(Integer id, RoleManagementRequestDTO dto) {
         RoleManagement e = roleManagementRepo.findById(id).orElseThrow(() -> new RuntimeException("RoleManagement not found with id: " + id));
         e.setRoleG(dto.getRoleG()); e.setServerRole(dto.getServerRole()); e.setDescription(dto.getDescription());
         e.setCreatedAt(dto.getCreatedAt()); e.setState(dto.getState());
@@ -49,8 +49,8 @@ public class RoleManagementServiceImpl implements IRoleManagementService {
     public void deleteById(Integer id) { roleManagementRepo.deleteById(id); }
     
 
-    private RoleManagementDTO toDTO(RoleManagement e) {
-        RoleManagementDTO d = new RoleManagementDTO();
+    private RoleManagementRequestDTO toDTO(RoleManagement e) {
+        RoleManagementRequestDTO d = new RoleManagementRequestDTO();
         d.setRoleGId(e.getRoleGId()); d.setRoleG(e.getRoleG()); d.setServerRole(e.getServerRole());
         d.setDescription(e.getDescription()); d.setCreatedAt(e.getCreatedAt()); d.setState(e.getState());
         return d;
@@ -58,12 +58,12 @@ public class RoleManagementServiceImpl implements IRoleManagementService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<RoleManagementDTO> listRoleNames(){
+    public List<RoleManagementRequestDTO> listRoleNames(){
 
         List<RoleManagement> rolesEntity = roleManagementRepo.findByStateTrue();
 
         return rolesEntity.stream().map(rolEntity -> {
-            RoleManagementDTO dto = new RoleManagementDTO();           
+            RoleManagementRequestDTO dto = new RoleManagementRequestDTO();           
             dto.setRoleGId(rolEntity.getRoleGId()); 
             dto.setRoleG(rolEntity.getRoleG());           
             return dto;
@@ -84,7 +84,7 @@ public class RoleManagementServiceImpl implements IRoleManagementService {
 
     @Override
     @Transactional
-    public SpResponseDTO createRoleManagement(RoleManagementDTO roleRequest){
+    public SpResponseDTO createRoleManagement(RoleManagementRequestDTO roleRequest){
         try{
             return roleManagementCustomRepo.createRoleManagement(roleRequest.getRoleG(), roleRequest.getDescription());
         } catch (Exception e){
@@ -95,7 +95,7 @@ public class RoleManagementServiceImpl implements IRoleManagementService {
 
     @Override
     @Transactional
-    public SpResponseDTO updateRoleManagement(RoleManagementDTO roleRequest){
+    public SpResponseDTO updateRoleManagement(RoleManagementRequestDTO roleRequest){
         try{
             return roleManagementCustomRepo.updateRoleManagement(roleRequest.getRoleGId(), roleRequest.getRoleG(), roleRequest.getDescription());
         } catch (Exception e){

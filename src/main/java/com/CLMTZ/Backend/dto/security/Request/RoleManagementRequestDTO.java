@@ -1,4 +1,4 @@
-package com.CLMTZ.Backend.dto.security;
+package com.CLMTZ.Backend.dto.security.Request;
 
 import java.time.LocalDateTime;
 
@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class RoleManagementDTO {
+public class RoleManagementRequestDTO {
     private Integer roleGId;
     private String roleG;
     private String serverRole;
