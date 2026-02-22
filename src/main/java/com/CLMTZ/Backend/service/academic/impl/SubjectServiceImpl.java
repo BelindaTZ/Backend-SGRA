@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import com.CLMTZ.Backend.dto.academic.SubjectDTO;
+import com.CLMTZ.Backend.dto.academic.SubjectLoadDTO;
 import com.CLMTZ.Backend.model.academic.Subject;
 import com.CLMTZ.Backend.repository.academic.ISubjectRepository;
 import com.CLMTZ.Backend.service.academic.ISubjectService;
@@ -54,6 +55,12 @@ public class SubjectServiceImpl implements ISubjectService {
         dto.setSemester(e.getSemester());
         dto.setState(e.getState());
         return dto;
+    }
+
+    @Override
+    public List<String> uploadSubjects(List<SubjectLoadDTO> subjectDTOs) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'uploadSubjects'");
     }
     
 }

@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import com.CLMTZ.Backend.dto.academic.PeriodDTO;
+import com.CLMTZ.Backend.dto.academic.PeriodLoadDTO;
 import com.CLMTZ.Backend.model.academic.Period;
 import com.CLMTZ.Backend.repository.academic.IPeriodRepository;
 import com.CLMTZ.Backend.service.academic.IPeriodService;
@@ -63,6 +64,12 @@ public class PeriodServiceImpl implements IPeriodService {
     public List<String> Period(List<PeriodDTO> dtos) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'Period'");
+    }
+
+    @Override
+    public List<String> uploadPeriods(List<PeriodLoadDTO> periodDTOs) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'uploadPeriods'");
     }
 
     

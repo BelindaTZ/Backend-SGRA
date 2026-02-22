@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
 import com.CLMTZ.Backend.dto.academic.EnrollmentDetailDTO;
+import com.CLMTZ.Backend.dto.academic.EnrollmentDetailLoadDTO;
 import com.CLMTZ.Backend.model.academic.EnrollmentDetail;
 import com.CLMTZ.Backend.repository.academic.*;
 import com.CLMTZ.Backend.service.academic.IEnrollmentDetailService;
@@ -70,5 +71,11 @@ public class EnrollmentDetailServiceImpl implements IEnrollmentDetailService {
         if (dto.getSubjectId() != null) entity.setSubjectId(subjectRepository.findById(dto.getSubjectId()).orElseThrow(() -> new RuntimeException("Subject not found")));
         if (dto.getParallelId() != null) entity.setParallelId(parallelRepository.findById(dto.getParallelId()).orElseThrow(() -> new RuntimeException("Parallel not found")));
         return entity;
+    }
+
+    @Override
+    public List<String> uploadEnrollmentDetails(List<EnrollmentDetailLoadDTO> registrationDTOs) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'uploadEnrollmentDetails'");
     }
 }

@@ -3,7 +3,7 @@ package com.CLMTZ.Backend.service.security.impl;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+
 
 import com.CLMTZ.Backend.dto.security.Request.ModuleManagementRequestDTO;
 import com.CLMTZ.Backend.dto.security.Request.UpdateRolePermissionsRequestDTO;

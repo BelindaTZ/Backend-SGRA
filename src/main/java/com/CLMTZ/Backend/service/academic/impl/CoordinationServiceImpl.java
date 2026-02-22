@@ -12,7 +12,6 @@ import com.CLMTZ.Backend.dto.academic.CoordinationDTO;
 import com.CLMTZ.Backend.dto.academic.StudentLoadDTO;
 import com.CLMTZ.Backend.dto.academic.TeachingDTO;
 import com.CLMTZ.Backend.dto.academic.PeriodDTO;
-import com.CLMTZ.Backend.dto.academic.SyllabiDTO;
 import com.CLMTZ.Backend.model.academic.Coordination;
 import com.CLMTZ.Backend.repository.academic.ICareerRepository;
 import com.CLMTZ.Backend.repository.academic.ICoordinationRepository;

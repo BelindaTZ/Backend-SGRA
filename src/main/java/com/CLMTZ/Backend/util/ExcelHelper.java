@@ -6,13 +6,11 @@ import com.CLMTZ.Backend.dto.academic.EnrollmentDetailLoadDTO;
 import com.CLMTZ.Backend.dto.academic.PeriodLoadDTO;
 import com.CLMTZ.Backend.dto.academic.StudentLoadDTO;
 import com.CLMTZ.Backend.dto.academic.SubjectLoadDTO;
-import com.CLMTZ.Backend.dto.academic.SyllabiDTO;
 import com.CLMTZ.Backend.dto.academic.SyllabiLoadDTO;
 import com.CLMTZ.Backend.dto.academic.TeachingDTO;
 
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -288,16 +286,13 @@ public class ExcelHelper {
                 String diaStr = getCellValue(row, 4).replace(".0", "");
                 schedule.setDiaSemana(diaStr.isEmpty() ? 0 : Integer.parseInt(diaStr));
                 
-                // Columna F (5): Hora Inicio (Formato HH:mm)
+                // Columna F (5): Hora Inicio
                 String horaInicioStr = getCellValue(row, 5);
-                // Si el Excel pasa segundos "08:00:00", nos quedamos con "08:00"
-                if(horaInicioStr.length() > 5) horaInicioStr = horaInicioStr.substring(0, 5);
-                schedule.setHoraInicio(LocalTime.parse(horaInicioStr));
+                schedule.setHoraInicio(parseExcelTime(horaInicioStr));
                 
-                // Columna G (6): Hora Fin (Formato HH:mm)
+                // Columna G (6): Hora Fin
                 String horaFinStr = getCellValue(row, 6);
-                if(horaFinStr.length() > 5) horaFinStr = horaFinStr.substring(0, 5);
-                schedule.setHoraFin(LocalTime.parse(horaFinStr));
+                schedule.setHoraFin(parseExcelTime(horaFinStr));
 
                 scheduleList.add(schedule);
             }
@@ -326,5 +321,25 @@ public class ExcelHelper {
                 return false;
         }
         return true;
+    }
+    // Método robusto para parsear horas desde Excel
+    private static LocalTime parseExcelTime(String timeStr) {
+        if (timeStr == null || timeStr.trim().isEmpty()) {
+            return null;
+        }
+        
+        timeStr = timeStr.trim();
+        
+        // Si la hora viene como "8:00" (1 dígito : 2 dígitos), le agregamos el '0' al inicio
+        if (timeStr.matches("^\\d:\\d{2}.*")) {
+            timeStr = "0" + timeStr;
+        }
+        
+        // Si la hora trae segundos como "08:00:00", nos quedamos solo con los primeros 5 caracteres "08:00"
+        if (timeStr.length() > 5) {
+            timeStr = timeStr.substring(0, 5);
+        }
+        
+        return LocalTime.parse(timeStr);
     }
 }
