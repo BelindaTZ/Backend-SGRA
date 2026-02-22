@@ -91,7 +91,29 @@ public class CareerServiceImpl implements ICareerService {
 
     @Override
     public List<String> uploadCareers(List<CareerLoadDTO> dtos) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'uploadCareers'");
+        List<String> report = new java.util.ArrayList<>();
+        for (CareerLoadDTO dto : dtos) {
+            try {
+                Career career = repository.findAll().stream()
+                    .filter(c -> c.getNameCareer().equalsIgnoreCase(dto.getNombreCarrera()))
+                    .findFirst().orElse(null);
+                if (career == null) {
+                    career = new Career();
+                    career.setNameCareer(dto.getNombreCarrera());
+                    career.setSemester(dto.getSemestres());
+                    career.setState(true);
+                    // NOTA: No se asignan area/modalidad aquí por falta de info en el DTO
+                    repository.save(career);
+                    report.add("Carrera '" + dto.getNombreCarrera() + "' creada");
+                } else {
+                    career.setSemester(dto.getSemestres());
+                    repository.save(career);
+                    report.add("Carrera '" + dto.getNombreCarrera() + "' actualizada");
+                }
+            } catch (Exception e) {
+                report.add("Carrera '" + dto.getNombreCarrera() + "': ERROR (" + e.getMessage() + ")");
+            }
+        }
+        return report;
     }
 }

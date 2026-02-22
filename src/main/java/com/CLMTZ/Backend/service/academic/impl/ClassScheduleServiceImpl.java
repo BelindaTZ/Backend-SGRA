@@ -13,6 +13,7 @@ import com.CLMTZ.Backend.repository.academic.*;
 import com.CLMTZ.Backend.service.academic.IClassScheduleService;
 
 import lombok.RequiredArgsConstructor;
+import lombok.var;
 
 @Service
 @RequiredArgsConstructor
@@ -80,70 +81,60 @@ public class ClassScheduleServiceImpl implements IClassScheduleService {
     @Override
     public List<String> uploadClassSchedules(List<ClassScheduleLoadDTO> scheduleDTOs) {
         List<String> resultados = new ArrayList<>();
-
         if (scheduleDTOs == null || scheduleDTOs.isEmpty()) {
             resultados.add("No se encontraron filas para procesar.");
             return resultados;
         }
-
         for (int i = 0; i < scheduleDTOs.size(); i++) {
             int filaExcel = i + 2;
             ClassScheduleLoadDTO fila = scheduleDTOs.get(i);
-
             try {
-                if (fila.getCedulaDocente() == null || fila.getCedulaDocente().trim().isEmpty()) {
-                    resultados.add("Fila " + filaExcel + ": ERROR (Cédula del docente vacía)");
-                    continue;
-                }
-                if (fila.getNombreAsignatura() == null || fila.getNombreAsignatura().trim().isEmpty()) {
-                    resultados.add("Fila " + filaExcel + ": ERROR (Asignatura vacía)");
-                    continue;
-                }
-                if (fila.getNombreParalelo() == null || fila.getNombreParalelo().trim().isEmpty()) {
-                    resultados.add("Fila " + filaExcel + ": ERROR (Paralelo vacío)");
-                    continue;
-                }
-                if (fila.getNombrePeriodo() == null || fila.getNombrePeriodo().trim().isEmpty()) {
-                    resultados.add("Fila " + filaExcel + ": ERROR (Periodo vacío)");
-                    continue;
-                }
-                if (fila.getDiaSemana() == null || fila.getDiaSemana() < 1 || fila.getDiaSemana() > 7) {
-                    resultados.add("Fila " + filaExcel + ": ERROR (Día de semana inválido, debe estar entre 1 y 7)");
-                    continue;
-                }
-                if (fila.getHoraInicio() == null || fila.getHoraFin() == null) {
-                    resultados.add("Fila " + filaExcel + ": ERROR (Hora inicio/fin vacía)");
-                    continue;
-                }
-                if (!fila.getHoraFin().isAfter(fila.getHoraInicio())) {
-                    resultados.add("Fila " + filaExcel + ": ERROR (La hora fin debe ser mayor a la hora inicio)");
+                // 1. VALIDACIÓN PREVENTIVA (Evita NullPointerExceptions al hacer .trim)
+                String cedula = fila.getCedulaDocente() != null ? fila.getCedulaDocente().trim() : "";
+                String asignatura = fila.getNombreAsignatura() != null ? fila.getNombreAsignatura().trim() : "";
+                String paralelo = fila.getNombreParalelo() != null ? fila.getNombreParalelo().trim() : "";
+                String periodo = fila.getNombrePeriodo() != null ? fila.getNombrePeriodo().trim() : "";
+
+                if (cedula.isEmpty() || asignatura.isEmpty() || paralelo.isEmpty() || periodo.isEmpty()) {
+                    resultados.add("Fila " + filaExcel + ": ERROR (Faltan datos obligatorios de la clase)");
                     continue;
                 }
 
+                // 2. BUSCAR CLASE BASE
                 var claseOpt = classRepository
                         .findByTeacherId_UserId_IdentificationAndSubjectId_SubjectIgnoreCaseAndParallelId_SectionIgnoreCaseAndPeriodId_PeriodIgnoreCase(
-                                fila.getCedulaDocente().trim(),
-                                fila.getNombreAsignatura().trim(),
-                                fila.getNombreParalelo().trim(),
-                                fila.getNombrePeriodo().trim());
+                                cedula, asignatura, paralelo, periodo);
 
                 if (claseOpt.isEmpty()) {
-                    resultados.add("Fila " + filaExcel
-                            + ": ERROR (No existe clase asignada para ese docente/asignatura/paralelo/periodo)");
+                    resultados.add("Fila " + filaExcel + ": ERROR (No existe clase asignada para ese docente/asignatura/paralelo/periodo)");
+                    continue;
+                }
+
+                // 3. BUSCAR FRANJA HORARIA
+                if (fila.getHoraInicio() == null || fila.getHoraFin() == null) {
+                    resultados.add("Fila " + filaExcel + ": ERROR (Las horas de inicio y fin son obligatorias)");
                     continue;
                 }
 
                 var franjaOpt = timeSlotRepository.findByStartTimeAndEndTime(fila.getHoraInicio(), fila.getHoraFin());
+                
                 if (franjaOpt.isEmpty()) {
                     resultados.add("Fila " + filaExcel + ": ERROR (No existe franja horaria para "
                             + fila.getHoraInicio() + " - " + fila.getHoraFin() + ")");
                     continue;
                 }
 
+                // 4. EXTRAER VALORES
                 var clase = claseOpt.get();
                 var franja = franjaOpt.get();
+
+                if (fila.getDiaSemana() == null) {
+                    resultados.add("Fila " + filaExcel + ": ERROR (El día de la semana es obligatorio)");
+                    continue;
+                }
                 Short dia = fila.getDiaSemana().shortValue();
 
+                // 5. VALIDAR DUPLICADOS
                 boolean existeHorario = repository
                         .existsByAssignedClassId_IdClassAndPeriodId_PeriodIdAndDayAndTimeSlotId_TimeSlotId(
                                 clase.getIdClass(),
@@ -156,6 +147,7 @@ public class ClassScheduleServiceImpl implements IClassScheduleService {
                     continue;
                 }
 
+                // 6. GUARDAR NUEVO HORARIO
                 ClassSchedule nuevoHorario = new ClassSchedule();
                 nuevoHorario.setAssignedClassId(clase);
                 nuevoHorario.setPeriodId(clase.getPeriodId());
@@ -167,10 +159,13 @@ public class ClassScheduleServiceImpl implements IClassScheduleService {
                 resultados.add("Fila " + filaExcel + ": OK");
 
             } catch (Exception e) {
-                resultados.add("Fila " + filaExcel + ": ERROR (" + e.getMessage() + ")");
+                // Atrapamos el error e imprimimos la traza en consola para que sepas exactamente qué falló
+                e.printStackTrace(); 
+                resultados.add("Fila " + filaExcel + ": ERROR INTERNO (" + e.getMessage() + ")");
             }
         }
-
         return resultados;
     }
 }
+
+

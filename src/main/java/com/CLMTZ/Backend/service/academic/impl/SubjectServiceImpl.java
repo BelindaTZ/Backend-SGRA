@@ -59,8 +59,29 @@ public class SubjectServiceImpl implements ISubjectService {
 
     @Override
     public List<String> uploadSubjects(List<SubjectLoadDTO> subjectDTOs) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'uploadSubjects'");
+        List<String> report = new java.util.ArrayList<>();
+        for (SubjectLoadDTO dto : subjectDTOs) {
+            try {
+                Subject subject = repository.findAll().stream()
+                    .filter(s -> s.getSubject().equalsIgnoreCase(dto.getNombreAsignatura()) && s.getSemester().equals(dto.getSemestre()))
+                    .findFirst().orElse(null);
+                if (subject == null) {
+                    subject = new Subject();
+                    subject.setSubject(dto.getNombreAsignatura());
+                    subject.setSemester(dto.getSemestre());
+                    subject.setState(true);
+                    repository.save(subject);
+                    report.add("Asignatura '" + dto.getNombreAsignatura() + "' creada");
+                } else {
+                    subject.setSemester(dto.getSemestre());
+                    repository.save(subject);
+                    report.add("Asignatura '" + dto.getNombreAsignatura() + "' actualizada");
+                }
+            } catch (Exception e) {
+                report.add("Asignatura '" + dto.getNombreAsignatura() + "': ERROR (" + e.getMessage() + ")");
+            }
+        }
+        return report;
     }
     
 }

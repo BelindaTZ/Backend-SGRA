@@ -15,6 +15,7 @@ import com.CLMTZ.Backend.dto.academic.EnrollmentDetailLoadDTO;
 import com.CLMTZ.Backend.dto.academic.PeriodLoadDTO;
 import com.CLMTZ.Backend.dto.academic.StudentLoadDTO;
 import com.CLMTZ.Backend.dto.academic.SubjectLoadDTO;
+import com.CLMTZ.Backend.dto.academic.SyllabiLoadDTO;
 import com.CLMTZ.Backend.dto.academic.TeachingDTO;
 import com.CLMTZ.Backend.service.academic.ICareerService;
 import com.CLMTZ.Backend.service.academic.IClassScheduleService;
@@ -22,6 +23,7 @@ import com.CLMTZ.Backend.service.academic.ICoordinationService;
 import com.CLMTZ.Backend.service.academic.IEnrollmentDetailService;
 import com.CLMTZ.Backend.service.academic.IPeriodService;
 import com.CLMTZ.Backend.service.academic.ISubjectService;
+import com.CLMTZ.Backend.service.academic.ISyllabiService;
 import com.CLMTZ.Backend.util.ExcelHelper;
 
 import lombok.RequiredArgsConstructor;
@@ -254,6 +256,33 @@ public class CoordinationController {
                     .body(List.of("Error al procesar el archivo de horarios: " + e.getMessage()));
         }
         
+    }
+    @Autowired
+    private ISyllabiService syllabiService; // Inyectamos el servicio de temarios
+
+    @PostMapping("/upload-syllabi")
+    public ResponseEntity<?> uploadSyllabi(@RequestParam("file") MultipartFile file) {
+        
+        // 1. Validar formato Excel
+        if (!ExcelHelper.hasExcelFormat(file)) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(List.of("Error: Por favor, suba un archivo Excel válido (.xlsx)"));
+        }
+
+        try {
+            // 2. Extraer datos del Excel a la lista de DTOs usando el método que creamos
+            List<SyllabiLoadDTO> syllabiDTOs = ExcelHelper.excelToSyllabi(file.getInputStream());
+            
+            // 3. Procesar en la base de datos a través del servicio
+            List<String> report = syllabiService.uploadSyllabi(syllabiDTOs);
+            
+            // 4. Devolver la respuesta con el reporte detallado
+            return ResponseEntity.ok(report);
+            
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(List.of("Error interno al procesar el archivo de temarios: " + e.getMessage()));
+        }
     }
     
 }
