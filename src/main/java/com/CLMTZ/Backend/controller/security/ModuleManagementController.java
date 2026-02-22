@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import com.CLMTZ.Backend.dto.security.Request.MasterDataManagementRequestDTO;
 import com.CLMTZ.Backend.dto.security.Request.MasterManagementRequestDTO;
 import com.CLMTZ.Backend.dto.security.Request.ModuleManagementRequestDTO;
 import com.CLMTZ.Backend.dto.security.Request.UpdateRolePermissionsRequestDTO;
@@ -65,6 +66,12 @@ public class ModuleManagementController {
     @PostMapping("/create-master-record")
     public ResponseEntity<SpResponseDTO> masterTablesManagement(@RequestBody MasterManagementRequestDTO masterTables){
         SpResponseDTO responseDTO = moduleManagementSer.masterTablesManagement(masterTables);
+        return ResponseEntity.ok(responseDTO);
+    }
+
+    @PutMapping("/update-master-record")
+    public ResponseEntity<SpResponseDTO> masterDataUpdateManagement(@RequestBody MasterDataManagementRequestDTO dataUpdate){
+        SpResponseDTO responseDTO = moduleManagementSer.masterDataUpdateManagement(dataUpdate);
         return ResponseEntity.ok(responseDTO);
     }
 }

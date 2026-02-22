@@ -2,6 +2,7 @@ package com.CLMTZ.Backend.service.security;
 
 import java.util.List;
 
+import com.CLMTZ.Backend.dto.security.Request.MasterDataManagementRequestDTO;
 import com.CLMTZ.Backend.dto.security.Request.MasterManagementRequestDTO;
 import com.CLMTZ.Backend.dto.security.Request.ModuleManagementRequestDTO;
 import com.CLMTZ.Backend.dto.security.Request.UpdateRolePermissionsRequestDTO;
@@ -22,4 +23,5 @@ public interface IModuleManagementService {
     List<MasterDataListManagementResponseDTO> listDataMasterTables(String schemaTables);
     SpResponseDTO updateRolePermissions(UpdateRolePermissionsRequestDTO updateRolesPermissions);
     SpResponseDTO masterTablesManagement(MasterManagementRequestDTO masterTables);
+    SpResponseDTO masterDataUpdateManagement(MasterDataManagementRequestDTO dataUpdate);
 }

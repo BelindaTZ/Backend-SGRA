@@ -10,6 +10,7 @@ import com.CLMTZ.Backend.dto.security.Request.UserManagementRequestDTO;
 import com.CLMTZ.Backend.dto.security.Response.SpResponseDTO;
 import com.CLMTZ.Backend.dto.security.Response.UserListManagementResponseDTO;
 import com.CLMTZ.Backend.dto.security.Response.UserRoleManagementResponseDTO;
+import com.CLMTZ.Backend.dto.security.Response.UserRolesUpdateManagementResponseDTO;
 import com.CLMTZ.Backend.service.security.IUserManagementService;
 import lombok.RequiredArgsConstructor;
 
@@ -58,7 +59,7 @@ public class UserManagementController {
     }
     
     @PutMapping("/update-user")
-    public ResponseEntity<SpResponseDTO> updateGUser(@RequestBody UserRoleManagementResponseDTO requestUser) {    
+    public ResponseEntity<SpResponseDTO> updateGUser(@RequestBody UserRolesUpdateManagementResponseDTO requestUser) {    
         
         SpResponseDTO request = userManagementser.updateUserManagement(requestUser);
 

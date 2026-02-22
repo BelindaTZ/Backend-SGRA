@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.CLMTZ.Backend.config.DynamicDataSourceService;
+import com.CLMTZ.Backend.dto.security.Request.MasterDataManagementRequestDTO;
 import com.CLMTZ.Backend.dto.security.Request.MasterManagementRequestDTO;
 import com.CLMTZ.Backend.dto.security.Response.MasterDataListManagementResponseDTO;
 import com.CLMTZ.Backend.dto.security.Response.MasterTableListManagementResponseDTO;
@@ -95,6 +96,31 @@ public class ModuleCustomManagementRepository implements IModuleCustomManagement
 
         query.setParameter("p_esquematabla", masterTables.getEsquematabla());
         query.setParameter("p_valor", masterTables.getNombre());
+
+        query.execute();
+
+        String message = (String) query.getOutputParameterValue("p_mensaje");
+        Boolean success = (Boolean) query.getOutputParameterValue("p_exito");
+
+        return new SpResponseDTO(message, success);
+    }
+
+    @Override
+    @Transactional
+    public SpResponseDTO masterDataUpdateManagement(MasterDataManagementRequestDTO dataUpdate){
+        StoredProcedureQuery query = entityManager.createStoredProcedureQuery("seguridad.sp_up_tablas_maestras");
+
+        query.registerStoredProcedureParameter("p_esquematabla", String.class, ParameterMode.IN);
+        query.registerStoredProcedureParameter("p_id", Integer.class, ParameterMode.IN);
+        query.registerStoredProcedureParameter("p_valor", String.class, ParameterMode.IN);
+        query.registerStoredProcedureParameter("p_estado", Boolean.class, ParameterMode.IN);
+        query.registerStoredProcedureParameter("p_mensaje", String.class, ParameterMode.OUT);
+        query.registerStoredProcedureParameter("p_exito", Boolean.class, ParameterMode.OUT);
+
+        query.setParameter("p_esquematabla", dataUpdate.getEsquematabla());
+        query.setParameter("p_id", dataUpdate.getId());
+        query.setParameter("p_valor", dataUpdate.getNombre());
+        query.setParameter("p_estado", dataUpdate.getEstado());
 
         query.execute();
 

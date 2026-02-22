@@ -3,7 +3,9 @@ package com.CLMTZ.Backend.service.security.impl;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import com.CLMTZ.Backend.dto.security.Request.MasterDataManagementRequestDTO;
 import com.CLMTZ.Backend.dto.security.Request.MasterManagementRequestDTO;
 import com.CLMTZ.Backend.dto.security.Request.ModuleManagementRequestDTO;
 import com.CLMTZ.Backend.dto.security.Request.UpdateRolePermissionsRequestDTO;
@@ -52,22 +54,26 @@ public class ModuleManagementServiceImpl implements IModuleManagementService {
     private ModuleManagementRequestDTO toDTO(ModuleManagement e) { ModuleManagementRequestDTO d = new ModuleManagementRequestDTO(); d.setRoleGId(e.getRoleGId()); d.setModuleG(e.getModuleG()); d.setState(e.getState()); return d; }
 
     @Override
+    @Transactional(readOnly = true)
     public List<ModuleListManagementResponseDTO> listModuleManagements(String grole){
         String vgrole = (grole == null) ? "" : grole;
         return moduleManagementCustomRepo.listModuleManagements(vgrole);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<MasterTableListManagementResponseDTO> listMasterTables(){
         return moduleManagementCustomRepo.listMasterTables();
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<MasterDataListManagementResponseDTO> listDataMasterTables(String schemaTables){
         return moduleManagementCustomRepo.listDataMasterTables(schemaTables);
     }
 
     @Override
+    @Transactional
     public SpResponseDTO updateRolePermissions(UpdateRolePermissionsRequestDTO updateRolesPermissionsRequest){
         try {
             String jsonPermisos = objectMapper.writeValueAsString(updateRolesPermissionsRequest);
@@ -80,11 +86,23 @@ public class ModuleManagementServiceImpl implements IModuleManagementService {
     }
 
     @Override
+    @Transactional
     public SpResponseDTO masterTablesManagement(MasterManagementRequestDTO masterTables){
         try {
             return moduleManagementCustomRepo.masterTablesManagement(masterTables);
         } catch (Exception e) {
             return new SpResponseDTO("Error al guardar el nuevo registro de la tabla: " + e.getMessage(), false);
+        }
+    }
+
+    @Override
+    @Transactional
+    public SpResponseDTO masterDataUpdateManagement(MasterDataManagementRequestDTO dataUpdate){
+        try {
+            System.out.println(dataUpdate);
+            return moduleManagementCustomRepo.masterDataUpdateManagement(dataUpdate);
+        } catch (Exception e) {
+            return new SpResponseDTO("Error al actualizar el registro de la tabla: " + e.getMessage(), false);
         }
     }
 }

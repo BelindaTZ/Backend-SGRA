@@ -78,7 +78,7 @@ public class UserManagementCustomRepositoryImpl implements IUserManagementCustom
         query.registerStoredProcedureParameter("p_json_usuario", String.class, ParameterMode.IN);
 
         query.registerStoredProcedureParameter("p_mensaje", String.class, ParameterMode.OUT);
-        query.registerStoredProcedureParameter("p_exito", String.class, ParameterMode.OUT);
+        query.registerStoredProcedureParameter("p_exito", Boolean.class, ParameterMode.OUT);
 
         query.setParameter("p_json_usuario", jsonUserId);
 

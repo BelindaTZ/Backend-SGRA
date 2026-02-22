@@ -13,6 +13,7 @@ import com.CLMTZ.Backend.dto.security.Request.UserManagementRequestDTO;
 import com.CLMTZ.Backend.dto.security.Response.SpResponseDTO;
 import com.CLMTZ.Backend.dto.security.Response.UserListManagementResponseDTO;
 import com.CLMTZ.Backend.dto.security.Response.UserRoleManagementResponseDTO;
+import com.CLMTZ.Backend.dto.security.Response.UserRolesUpdateManagementResponseDTO;
 import com.CLMTZ.Backend.model.security.UserManagement;
 import com.CLMTZ.Backend.repository.security.IUserManagementRepository;
 import com.CLMTZ.Backend.repository.security.custom.IUserManagementCustomRepository;
@@ -86,15 +87,15 @@ public class UserManagementServiceImpl implements IUserManagementService {
 
     @Override
     @Transactional
-    public SpResponseDTO updateUserManagement(UserRoleManagementResponseDTO userRequest){
+    public SpResponseDTO updateUserManagement(UserRolesUpdateManagementResponseDTO userRequest){
         try {
             String jsonUser = objectMapper.writeValueAsString(userRequest);
-
+            System.out.println("JSON ENVIADO AL SP: " + jsonUser);
             return userManagementCustRepo.updateUserManagement(jsonUser);
 
         } catch (Exception e) {
             e.printStackTrace();
-            return new SpResponseDTO("Error inesperado en el JSON: " + e.getCause().getMessage(), false);
+            return new SpResponseDTO("Error inesperado en el JSON: " + e.getMessage(), false);
         } 
     }
 

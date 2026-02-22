@@ -2,6 +2,7 @@ package com.CLMTZ.Backend.repository.security.custom;
 
 import java.util.List;
 
+import com.CLMTZ.Backend.dto.security.Request.MasterDataManagementRequestDTO;
 import com.CLMTZ.Backend.dto.security.Request.MasterManagementRequestDTO;
 import com.CLMTZ.Backend.dto.security.Response.MasterDataListManagementResponseDTO;
 import com.CLMTZ.Backend.dto.security.Response.MasterTableListManagementResponseDTO;
@@ -18,4 +19,6 @@ public interface IModuleCustomManagementRepository {
     SpResponseDTO updateRolePermissions(String jsonPermissions);
 
     SpResponseDTO masterTablesManagement(MasterManagementRequestDTO masterTables);
+
+    SpResponseDTO masterDataUpdateManagement(MasterDataManagementRequestDTO dataUpdate);
 }
