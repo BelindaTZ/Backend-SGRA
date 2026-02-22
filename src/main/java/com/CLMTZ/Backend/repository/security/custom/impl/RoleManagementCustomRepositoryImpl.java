@@ -35,7 +35,7 @@ public class RoleManagementCustomRepositoryImpl implements IRoleManagementCustom
     @Override
     @Transactional(readOnly = true)
     public List<RoleListManagementResponseDTO> listRolesManagement(String filter,Boolean state){
-        String query = "SELECT * FROM seguridad.fn_sl_groles(:p_filtro_texto, :p_estado)";
+        String query = "Select * from seguridad.fn_sl_groles(:p_filtro_texto, :p_estado)";
         MapSqlParameterSource params = new MapSqlParameterSource()
                 .addValue("p_filtro_texto", filter != null ? filter : "")
                 .addValue("p_estado", state != null ? state : true);

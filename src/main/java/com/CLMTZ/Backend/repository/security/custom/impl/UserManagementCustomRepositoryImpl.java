@@ -94,7 +94,7 @@ public class UserManagementCustomRepositoryImpl implements IUserManagementCustom
     @Transactional(readOnly = true)
     public UserRoleManagementResponseDTO DataUserById(Integer idUser){
         String query = "Select * from seguridad.fn_sl_up_gusuariosroles(:p_iduserg)";
-
+        
         MapSqlParameterSource params = new MapSqlParameterSource()
                 .addValue("p_iduserg", idUser, Types.INTEGER);
 
@@ -106,7 +106,6 @@ public class UserManagementCustomRepositoryImpl implements IUserManagementCustom
             dto.setContrasena(rs.getString(3));
             dto.setEstadogu(rs.getString(5));
             dto.setRolesasignadosgu(rs.getString(4));
-            
             return dto;
         });
 
