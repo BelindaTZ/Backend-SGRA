@@ -24,13 +24,13 @@ public class StudentMyRequestsController {
 
     @GetMapping
     public ResponseEntity<?> getMyRequests(
-            @RequestParam(required = false) Integer periodId,
-            @RequestParam(required = false) Integer statusId,
-            @RequestParam(required = false) Integer sessionTypeId,
-            @RequestParam(required = false) Integer subjectId,
-            @RequestParam(required = false) String search,
-            @RequestParam(defaultValue = "1") Integer page,
-            @RequestParam(defaultValue = "10") Integer size) {
+            @RequestParam(value = "periodId", required = false) Integer periodId,
+            @RequestParam(value = "statusId", required = false) Integer statusId,
+            @RequestParam(value = "sessionTypeId", required = false) Integer sessionTypeId,
+            @RequestParam(value = "subjectId", required = false) Integer subjectId,
+            @RequestParam(value = "search", required = false) String search,
+            @RequestParam(value = "page", defaultValue = "1") Integer page,
+            @RequestParam(value = "size", defaultValue = "10") Integer size) {
         try {
             UserContext ctx = UserContextHolder.getContext();
             Integer userId = ctx.getUserId();
@@ -64,7 +64,7 @@ public class StudentMyRequestsController {
     }
 
     @GetMapping("/chips")
-    public ResponseEntity<?> getMyRequestsChips(@RequestParam(required = false) Integer periodId) {
+    public ResponseEntity<?> getMyRequestsChips(@RequestParam(value = "periodId", required = false) Integer periodId) {
         try {
             UserContext ctx = UserContextHolder.getContext();
             Integer userId = ctx.getUserId();
@@ -82,17 +82,18 @@ public class StudentMyRequestsController {
     }
 
     @GetMapping("/summary")
-    public ResponseEntity<?> getMyRequestsSummary(@RequestParam(required = false) Integer periodId) {
+    public ResponseEntity<?> getMyRequestsSummary(
+            @RequestParam(value = "periodId", required = false) Integer periodId) {
         try {
             UserContext ctx = UserContextHolder.getContext();
             Integer userId = ctx.getUserId();
-
 
             if (periodId != null && periodId <= 0) {
                 return ResponseEntity.badRequest().body(Map.of("message", "Invalid periodId parameter"));
             }
 
-            List<StudentMyRequestsStatusSummaryDTO> response = studentMyRequestsService.getMyRequestsSummary(userId, periodId);
+            List<StudentMyRequestsStatusSummaryDTO> response = studentMyRequestsService.getMyRequestsSummary(userId,
+                    periodId);
             return ResponseEntity.ok(response);
 
         } catch (Exception e) {

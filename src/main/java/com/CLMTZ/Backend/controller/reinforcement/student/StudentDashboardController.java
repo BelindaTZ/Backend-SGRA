@@ -20,11 +20,10 @@ public class StudentDashboardController {
     }
 
     @GetMapping
-    public ResponseEntity<?> getDashboard(@RequestParam(required = false) Integer periodId) {
+    public ResponseEntity<?> getDashboard(@RequestParam(value = "periodId", required = false) Integer periodId) {
         try {
             UserContext ctx = UserContextHolder.getContext();
             Integer userId = ctx.getUserId();
-
 
             if (periodId != null && periodId <= 0) {
                 return ResponseEntity.badRequest().body(Map.of("message", "Invalid periodId parameter"));

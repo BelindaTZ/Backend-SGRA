@@ -42,7 +42,7 @@ public class StudentCatalogController {
     }
 
     @GetMapping("/teachers")
-    public ResponseEntity<?> getTeachers(@RequestParam(required = false) Integer modalityId) {
+    public ResponseEntity<?> getTeachers(@RequestParam(value = "modalityId", required = false) Integer modalityId) {
         try {
             List<TeacherItemDTO> teachers = studentCatalogService.getTeachers(modalityId);
             return ResponseEntity.ok(teachers);
@@ -67,7 +67,8 @@ public class StudentCatalogController {
             List<SessionTypeItemDTO> sessionTypes = studentCatalogService.getSessionTypes();
             return ResponseEntity.ok(sessionTypes);
         } catch (Exception e) {
-            return ResponseEntity.status(500).body(Map.of("message", "Error retrieving session types: " + e.getMessage()));
+            return ResponseEntity.status(500)
+                    .body(Map.of("message", "Error retrieving session types: " + e.getMessage()));
         }
     }
 

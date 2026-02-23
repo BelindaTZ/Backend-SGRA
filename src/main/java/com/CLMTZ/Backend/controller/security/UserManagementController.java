@@ -22,8 +22,10 @@ public class UserManagementController {
     private final IUserManagementService userManagementser;
 
     @GetMapping("/list-userG")
-    public ResponseEntity<List<UserListManagementResponseDTO>> listUserG(@RequestParam(required = false) String filter,
-            @RequestParam(required = false) LocalDate date, @RequestParam(required = false) Boolean state) {
+    public ResponseEntity<List<UserListManagementResponseDTO>> listUserG(
+            @RequestParam(value = "filter", required = false) String filter,
+            @RequestParam(value = "date", required = false) LocalDate date,
+            @RequestParam(value = "state", required = false) Boolean state) {
         List<UserListManagementResponseDTO> requestList = userManagementser.listUserListManagement(filter, date, state);
         return ResponseEntity.ok(requestList);
     }

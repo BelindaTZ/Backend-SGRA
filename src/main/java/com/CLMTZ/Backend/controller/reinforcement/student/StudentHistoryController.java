@@ -22,10 +22,10 @@ public class StudentHistoryController {
 
     @GetMapping("/requests")
     public ResponseEntity<?> getRequestHistory(
-            @RequestParam(required = false) Integer periodId,
-            @RequestParam(required = false) Integer statusId,
-            @RequestParam(defaultValue = "1") Integer page,
-            @RequestParam(defaultValue = "10") Integer size) {
+            @RequestParam(value = "periodId", required = false) Integer periodId,
+            @RequestParam(value = "statusId", required = false) Integer statusId,
+            @RequestParam(value = "page", defaultValue = "1") Integer page,
+            @RequestParam(value = "size", defaultValue = "10") Integer size) {
         try {
             UserContext ctx = UserContextHolder.getContext();
             Integer userId = ctx.getUserId();
@@ -43,23 +43,24 @@ public class StudentHistoryController {
                 return ResponseEntity.badRequest().body(Map.of("message", "Invalid statusId parameter"));
             }
 
-            StudentHistoryRequestsPageDTO response = studentHistoryService.getRequestHistory(userId, periodId, page, size, statusId);
+            StudentHistoryRequestsPageDTO response = studentHistoryService.getRequestHistory(userId, periodId, page,
+                    size, statusId);
             return ResponseEntity.ok(response);
 
         } catch (Exception e) {
-            return ResponseEntity.status(500).body(Map.of("message", "Error retrieving request history: " + e.getMessage()));
+            return ResponseEntity.status(500)
+                    .body(Map.of("message", "Error retrieving request history: " + e.getMessage()));
         }
     }
 
     @GetMapping("/sessions")
     public ResponseEntity<?> getPreviousSessions(
-            @RequestParam(defaultValue = "false") Boolean onlyAttended,
-            @RequestParam(defaultValue = "1") Integer page,
-            @RequestParam(defaultValue = "10") Integer size) {
+            @RequestParam(value = "onlyAttended", defaultValue = "false") Boolean onlyAttended,
+            @RequestParam(value = "page", defaultValue = "1") Integer page,
+            @RequestParam(value = "size", defaultValue = "10") Integer size) {
         try {
             UserContext ctx = UserContextHolder.getContext();
             Integer userId = ctx.getUserId();
-
 
             if (page < 1) {
                 return ResponseEntity.badRequest().body(Map.of("message", "Page must be greater than or equal to 1"));
@@ -68,11 +69,13 @@ public class StudentHistoryController {
                 return ResponseEntity.badRequest().body(Map.of("message", "Size must be between 1 and 100"));
             }
 
-            StudentHistorySessionsPageDTO response = studentHistoryService.getPreviousSessions(userId, page, size, onlyAttended);
+            StudentHistorySessionsPageDTO response = studentHistoryService.getPreviousSessions(userId, page, size,
+                    onlyAttended);
             return ResponseEntity.ok(response);
 
         } catch (Exception e) {
-            return ResponseEntity.status(500).body(Map.of("message", "Error retrieving previous sessions: " + e.getMessage()));
+            return ResponseEntity.status(500)
+                    .body(Map.of("message", "Error retrieving previous sessions: " + e.getMessage()));
         }
     }
 }
