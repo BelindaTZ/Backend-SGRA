@@ -23,21 +23,6 @@ public class UserManagementController {
 
     private final IUserManagementService userManagementser;
 
-    @GetMapping
-    public ResponseEntity<List<UserManagementRequestDTO>> findAll() { return ResponseEntity.ok(userManagementser.findAll()); }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<UserManagementRequestDTO> findById(@PathVariable Integer id) { return ResponseEntity.ok(userManagementser.findById(id)); }
-
-    @PostMapping
-    public ResponseEntity<UserManagementRequestDTO> save(@RequestBody UserManagementRequestDTO dto) { return new ResponseEntity<>(userManagementser.save(dto), HttpStatus.CREATED); }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<UserManagementRequestDTO> update(@PathVariable Integer id, @RequestBody UserManagementRequestDTO dto) { return ResponseEntity.ok(userManagementser.update(id, dto)); }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Integer id) { userManagementser.deleteById(id); return ResponseEntity.noContent().build(); }
-
     @GetMapping("/list-userG")
     public ResponseEntity<List<UserListManagementResponseDTO>> listUserG(@RequestParam(required = false) String filter,@RequestParam(required = false) LocalDate date, @RequestParam(required = false) Boolean state){
         List<UserListManagementResponseDTO> requestList =  userManagementser.listUserListManagement(filter, date, state);

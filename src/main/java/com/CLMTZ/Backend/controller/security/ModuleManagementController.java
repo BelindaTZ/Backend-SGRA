@@ -23,21 +23,6 @@ import lombok.RequiredArgsConstructor;
 public class ModuleManagementController {
 
     private final IModuleManagementService moduleManagementSer;
-    
-    @GetMapping
-    public ResponseEntity<List<ModuleManagementRequestDTO>> findAll() { return ResponseEntity.ok(moduleManagementSer.findAll()); }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<ModuleManagementRequestDTO> findById(@PathVariable Integer id) { return ResponseEntity.ok(moduleManagementSer.findById(id)); }
-
-    @PostMapping
-    public ResponseEntity<ModuleManagementRequestDTO> save(@RequestBody ModuleManagementRequestDTO dto) { return new ResponseEntity<>(moduleManagementSer.save(dto), HttpStatus.CREATED); }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<ModuleManagementRequestDTO> update(@PathVariable Integer id, @RequestBody ModuleManagementRequestDTO dto) { return ResponseEntity.ok(moduleManagementSer.update(id, dto)); }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Integer id) { moduleManagementSer.deleteById(id); return ResponseEntity.noContent().build(); }
 
     @GetMapping("/list-modules-permisis")
     public ResponseEntity<List<ModuleListManagementResponseDTO>> listGModulesPermisis(@RequestParam String role) {

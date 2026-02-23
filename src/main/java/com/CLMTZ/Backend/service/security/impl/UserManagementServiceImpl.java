@@ -14,8 +14,6 @@ import com.CLMTZ.Backend.dto.security.Response.SpResponseDTO;
 import com.CLMTZ.Backend.dto.security.Response.UserListManagementResponseDTO;
 import com.CLMTZ.Backend.dto.security.Response.UserRoleManagementResponseDTO;
 import com.CLMTZ.Backend.dto.security.Response.UserRolesUpdateManagementResponseDTO;
-import com.CLMTZ.Backend.model.security.UserManagement;
-import com.CLMTZ.Backend.repository.security.IUserManagementRepository;
 import com.CLMTZ.Backend.repository.security.custom.IUserManagementCustomRepository;
 import com.CLMTZ.Backend.service.security.IUserManagementService;
 
@@ -26,38 +24,9 @@ import tools.jackson.databind.ObjectMapper;
 @RequiredArgsConstructor
 public class UserManagementServiceImpl implements IUserManagementService {
 
-    private final IUserManagementRepository userManagementRepo;
     private final IUserManagementCustomRepository userManagementCustRepo;
     private final ObjectMapper objectMapper;
 
-    @Override
-    public List<UserManagementRequestDTO> findAll() { return userManagementRepo.findAll().stream().map(this::toDTO).collect(Collectors.toList()); }
-
-    @Override
-    public UserManagementRequestDTO findById(Integer id) { return userManagementRepo.findById(id).map(this::toDTO).orElseThrow(() -> new RuntimeException("UserManagement not found with id: " + id)); }
-
-    @Override
-    public UserManagementRequestDTO save(UserManagementRequestDTO dto) {
-        UserManagement e = new UserManagement();
-        e.setUser(dto.getUser()); e.setPassword(dto.getPassword()); e.setState(dto.getState() != null ? dto.getState() : true);
-        return toDTO(userManagementRepo.save(e));
-    }
-
-    @Override
-    public UserManagementRequestDTO update(Integer id, UserManagementRequestDTO dto) {
-        UserManagement e = userManagementRepo.findById(id).orElseThrow(() -> new RuntimeException("UserManagement not found with id: " + id));
-        e.setUser(dto.getUser()); e.setPassword(dto.getPassword()); e.setState(dto.getState());
-        return toDTO(userManagementRepo.save(e));
-    }
-
-    @Override
-    public void deleteById(Integer id) { userManagementRepo.deleteById(id); }
-
-    private UserManagementRequestDTO toDTO(UserManagement e) {
-        UserManagementRequestDTO d = new UserManagementRequestDTO();
-        d.setUserGId(e.getUserGId()); d.setUser(e.getUser()); d.setPassword(e.getPassword()); d.setState(e.getState());
-        return d;
-    }
 
     @Override
     @Transactional(readOnly = true)

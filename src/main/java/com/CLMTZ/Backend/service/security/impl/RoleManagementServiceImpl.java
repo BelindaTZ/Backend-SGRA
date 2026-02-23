@@ -11,6 +11,7 @@ import com.CLMTZ.Backend.dto.security.Response.RoleListManagementResponseDTO;
 import com.CLMTZ.Backend.dto.security.Response.SpResponseDTO;
 import com.CLMTZ.Backend.model.security.RoleManagement;
 import com.CLMTZ.Backend.repository.security.IRoleManagementRepository;
+import com.CLMTZ.Backend.repository.security.IUserManagementRepository;
 import com.CLMTZ.Backend.repository.security.custom.IRoleManagementCustomRepository;
 import com.CLMTZ.Backend.service.security.IRoleManagementService;
 
@@ -22,6 +23,7 @@ public class RoleManagementServiceImpl implements IRoleManagementService {
 
     private final IRoleManagementRepository roleManagementRepo;
     private final IRoleManagementCustomRepository roleManagementCustomRepo;
+    private final IUserManagementRepository userManagementRepo;
 
     @Override
     @Transactional(readOnly = true)
@@ -76,8 +78,8 @@ public class RoleManagementServiceImpl implements IRoleManagementService {
 
         try {
 
-            Long userActive = roleManagementRepo.countByState(true);
-            Long usersInactive = roleManagementRepo.countByState(false);
+            Long userActive = userManagementRepo.countByState(true);
+            Long usersInactive = userManagementRepo.countByState(false);
             Long roleActive = roleManagementRepo.countByState(true);
             Long roleInactive = roleManagementRepo.countByState(false);
 
