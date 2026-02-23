@@ -68,35 +68,39 @@ public class ExcelValidator {
         // CASO 2: Formato Latinoamericano completo (DD-MM-AAAA) -> Ej: 10-08-2013 o 5-8-2013
         if (cleanValue.matches("^\\d{1,2}-\\d{1,2}-\\d{4}$")) {
             try {
-                // Usamos d-M-yyyy para que acepte tanto "05" como "5" en días y meses
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d-M-yyyy");
-                LocalDate date = LocalDate.parse(cleanValue, formatter);
-                return date.toString(); // Devuelve automáticamente YYYY-MM-DD
-            } catch (DateTimeParseException e) {
-                return cleanValue;
+                // Intento 1: Día-Mes-Año (d-M-yyyy)
+                DateTimeFormatter formatter1 = DateTimeFormatter.ofPattern("d-M-yyyy");
+                return LocalDate.parse(cleanValue, formatter1).toString();
+            } catch (DateTimeParseException e1) {
+                try {
+                    // Intento 2: Mes-Día-Año (M-d-yyyy) - Formato EE.UU.
+                    DateTimeFormatter formatter2 = DateTimeFormatter.ofPattern("M-d-yyyy");
+                    return LocalDate.parse(cleanValue, formatter2).toString();
+                } catch (DateTimeParseException e2) {
+                    return cleanValue; // Falla todo, lo devuelve tal cual
+                }
             }
         }
 
         // CASO 3: Formato corto de Excel (DD-MM-AA) -> Ej: 10-08-13 (El que me pediste)
         if (cleanValue.matches("^\\d{1,2}-\\d{1,2}-\\d{2}$")) {
             try {
-                // Truco avanzado: Le decimos a Java que si ve un año de 2 dígitos, asuma que es del año 2000 en adelante
-                DateTimeFormatter formatter = new DateTimeFormatterBuilder()
+                // Intento 1: Día-Mes-Año (d-M-yy)
+                DateTimeFormatter formatter1 = new DateTimeFormatterBuilder()
                         .appendPattern("d-M-")
                         .appendValueReduced(ChronoField.YEAR, 2, 2, 2000) 
                         .toFormatter();
-                
-                LocalDate date = LocalDate.parse(cleanValue, formatter);
-                return date.toString(); 
-            } catch (Exception e) {
-                // Si java.time falla, usamos el viejo y confiable SimpleDateFormat como respaldo
+                return LocalDate.parse(cleanValue, formatter1).toString(); 
+            } catch (Exception e1) {
                 try {
-                     SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yy");
-                     sdf.setLenient(false);
-                     java.util.Date d = sdf.parse(cleanValue);
-                     return new SimpleDateFormat("yyyy-MM-dd").format(d);
-                } catch (ParseException ex) {
-                     return cleanValue; 
+                    // Intento 2: Mes-Día-Año (M-d-yy) - Formato EE.UU.
+                    DateTimeFormatter formatter2 = new DateTimeFormatterBuilder()
+                            .appendPattern("M-d-")
+                            .appendValueReduced(ChronoField.YEAR, 2, 2, 2000) 
+                            .toFormatter();
+                    return LocalDate.parse(cleanValue, formatter2).toString();
+                } catch (Exception e2) {
+                    return cleanValue; // Falla todo
                 }
             }
         }

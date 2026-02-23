@@ -2,7 +2,6 @@ package com.CLMTZ.Backend.controller.academic;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -117,9 +116,8 @@ public class CoordinationController {
         message = "Formato inválido. Archivo: " + file.getOriginalFilename() + ", tipo: " + file.getContentType();
         return ResponseEntity.badRequest().body(message);
     }
-     
-    @Autowired
-    private ICareerService careerService; // Inyectamos el servicio de carreras
+    
+    private final ICareerService careerService; // Inyectamos el servicio de carreras
 
     @PostMapping("/upload-careers")
     public ResponseEntity<?> uploadCareers(@RequestParam("file") MultipartFile file) {
@@ -147,8 +145,7 @@ public class CoordinationController {
         }
     }
 
-    @Autowired
-    private ISubjectService subjectService; // Inyectamos el servicio de asignaturas
+    private final ISubjectService subjectService; // Inyectamos el servicio de asignaturas
 
     @PostMapping("/upload-subjects")
     public ResponseEntity<?> uploadSubjects(@RequestParam("file") MultipartFile file) {
@@ -174,8 +171,8 @@ public class CoordinationController {
                     .body(List.of("Error interno al procesar el archivo de asignaturas: " + e.getMessage()));
         }
     }
-    @Autowired
-    private IPeriodService periodService; // Inyectamos el servicio de periodos
+
+    private final IPeriodService periodService; // Inyectamos el servicio de periodos
 
     @PostMapping("/upload-periods")
     public ResponseEntity<?> uploadPeriods(@RequestParam("file") MultipartFile file) {
@@ -202,8 +199,8 @@ public class CoordinationController {
                     .body(List.of("Error al procesar el archivo de periodos: " + e.getMessage()));
         }
     }
-    @Autowired
-    private IEnrollmentDetailService enrollmentDetailService; // Inyectamos el servicio
+
+    private final IEnrollmentDetailService enrollmentDetailService; // Inyectamos el servicio
 
     @PostMapping("/upload-registrations")
     public ResponseEntity<?> uploadRegistrations(@RequestParam("file") MultipartFile file) {
@@ -229,8 +226,8 @@ public class CoordinationController {
                     .body(List.of("Error al procesar el archivo de matrículas: " + e.getMessage()));
         }
     }
-    @Autowired
-    private IClassScheduleService classScheduleService; // Inyectamos el servicio de horarios
+
+    private final IClassScheduleService classScheduleService; // Inyectamos el servicio de horarios
 
     @PostMapping("/upload-class-schedules")
     public ResponseEntity<?> uploadClassSchedules(@RequestParam("file") MultipartFile file) {
@@ -257,8 +254,8 @@ public class CoordinationController {
         }
         
     }
-    @Autowired
-    private ISyllabiService syllabiService; // Inyectamos el servicio de temarios
+
+    private final ISyllabiService syllabiService; // Inyectamos el servicio de temarios
 
     @PostMapping("/upload-syllabi")
     public ResponseEntity<?> uploadSyllabi(@RequestParam("file") MultipartFile file) {

@@ -212,11 +212,13 @@ public class ExcelHelper {
                 
                 // Columna B (1): Fecha de Inicio (Formato esperado: YYYY-MM-DD)
                 String fechaInicioStr = getCellValue(row, 1);
-                period.setFechaInicio(LocalDate.parse(fechaInicioStr));
+                String fechaInicioNormalizada = ExcelValidator.normalizeDate(fechaInicioStr);
+                period.setFechaInicio(LocalDate.parse(fechaInicioNormalizada));
                 
                 // Columna C (2): Fecha de Fin (Formato esperado: YYYY-MM-DD)
                 String fechaFinStr = getCellValue(row, 2);
-                period.setFechaFin(LocalDate.parse(fechaFinStr));
+                String fechaFinNormalizada = ExcelValidator.normalizeDate(fechaFinStr);
+                period.setFechaFin(LocalDate.parse(fechaFinNormalizada));
 
                 periodList.add(period);
             }

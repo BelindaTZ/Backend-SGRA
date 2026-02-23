@@ -89,7 +89,7 @@ public class PeriodServiceImpl implements IPeriodService {
                     report.add("Periodo '" + dto.getNombrePeriodo() + "' actualizado");
                 }
             } catch (Exception e) {
-                report.add("Periodo '" + dto.getNombrePeriodo() + "': ERROR (" + e.getMessage() + ")");
+                report.add("Periodo '" + dto.getNombrePeriodo() + "': ERROR (" + e.getCause().getMessage() + ")");
             }
         }
         return report;
