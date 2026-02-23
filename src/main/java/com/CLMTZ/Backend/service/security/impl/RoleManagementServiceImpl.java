@@ -64,7 +64,7 @@ public class RoleManagementServiceImpl implements IRoleManagementService {
     @Transactional
     public SpResponseDTO updateRoleManagement(RoleManagementRequestDTO roleRequest){
         try{
-            return roleManagementCustomRepo.updateRoleManagement(roleRequest.getRoleGId(), roleRequest.getRoleG(), roleRequest.getDescription());
+            return roleManagementCustomRepo.updateRoleManagement(roleRequest.getRoleGId(), roleRequest.getRoleG(), roleRequest.getDescription(), roleRequest.getState());
         } catch (Exception e){
             throw new RuntimeException("Error al editar el rol: " + e.getMessage());
         }
