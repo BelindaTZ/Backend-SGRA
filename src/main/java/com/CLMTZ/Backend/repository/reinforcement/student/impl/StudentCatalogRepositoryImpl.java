@@ -87,14 +87,12 @@ public class StudentCatalogRepositoryImpl implements StudentCatalogRepository {
 
     @Override
     public List<AvailableTimeSlotDTO> listAvailableTimeSlots(Integer teacherId, Short dayOfWeek, Integer periodId) {
-        String sql = "SELECT * FROM academico.fn_sl_franjas_docente_disponibles_ui(:teacherId, :dayOfWeek, :periodId, :nonBlockingStatuses)";
+        String sql = "SELECT * FROM academico.fn_sl_franjas_docente_disponibles_ui(:teacherId, :dayOfWeek, :periodId)";
 
         MapSqlParameterSource params = new MapSqlParameterSource();
         params.addValue("teacherId", teacherId);
         params.addValue("dayOfWeek", dayOfWeek);
         params.addValue("periodId", periodId);
-        // Estados no bloqueantes: por defecto vacío, se pueden configurar si se requiere
-        params.addValue("nonBlockingStatuses", new Integer[]{}, java.sql.Types.ARRAY);
 
         return getJdbcTemplate().query(sql, params, (rs, rowNum) -> new AvailableTimeSlotDTO(
                 rs.getInt("idfranjahoraria"),
