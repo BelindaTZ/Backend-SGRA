@@ -6,7 +6,9 @@ import com.CLMTZ.Backend.dto.reinforcement.student.StudentRequestCreateResponseD
 import com.CLMTZ.Backend.dto.reinforcement.student.StudentRequestPreviewRequestDTO;
 import com.CLMTZ.Backend.dto.reinforcement.student.StudentRequestPreviewResponseDTO;
 import com.CLMTZ.Backend.dto.security.session.UserContext;
+import com.CLMTZ.Backend.exception.TimeSlotNotAvailableException;
 import com.CLMTZ.Backend.service.reinforcement.student.StudentRequestService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -83,6 +85,10 @@ public class StudentRequestController {
             StudentRequestCreateResponseDTO response = studentRequestService.create(req, userId);
             return ResponseEntity.ok(response);
 
+        } catch (TimeSlotNotAvailableException e) {
+            // HTTP 409 Conflict: La franja no está disponible para el docente
+            return ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body(Map.of("message", e.getMessage(), "errorCode", "TIME_SLOT_NOT_AVAILABLE"));
         } catch (IllegalStateException e) {
             return ResponseEntity.badRequest().body(Map.of("message", e.getMessage()));
         } catch (Exception e) {

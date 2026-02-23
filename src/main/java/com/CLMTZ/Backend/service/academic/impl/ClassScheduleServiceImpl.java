@@ -14,7 +14,7 @@ import com.CLMTZ.Backend.repository.academic.*;
 import com.CLMTZ.Backend.service.academic.IClassScheduleService;
 
 import lombok.RequiredArgsConstructor;
-import lombok.var;
+//import lombok.var;
 
 @Service
 @RequiredArgsConstructor

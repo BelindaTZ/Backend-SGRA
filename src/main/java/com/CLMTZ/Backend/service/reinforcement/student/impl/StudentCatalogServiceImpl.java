@@ -45,4 +45,14 @@ public class StudentCatalogServiceImpl implements StudentCatalogService {
     public List<TimeSlotItemDTO> getTimeSlots() {
         return studentCatalogRepository.listTimeSlots();
     }
+
+    @Override
+    public List<AvailableTimeSlotDTO> getAvailableTimeSlots(Integer teacherId, Short dayOfWeek, Integer periodId) {
+        return studentCatalogRepository.listAvailableTimeSlots(teacherId, dayOfWeek, periodId);
+    }
+
+    @Override
+    public boolean isTimeSlotAvailable(Integer teacherId, Short dayOfWeek, Integer periodId, Integer timeSlotId) {
+        return studentCatalogRepository.isTimeSlotAvailable(teacherId, dayOfWeek, periodId, timeSlotId);
+    }
 }

@@ -81,4 +81,37 @@ public class StudentCatalogController {
             return ResponseEntity.status(500).body(Map.of("message", "Error retrieving time slots: " + e.getMessage()));
         }
     }
+
+    /**
+     * Endpoint para obtener franjas horarias disponibles de un docente.
+     * Filtra por disponibilidad registrada y excluye franjas ocupadas por solicitudes activas.
+     *
+     * @param teacherId ID del docente
+     * @param dayOfWeek Día de la semana (1=Lunes, 7=Domingo)
+     * @param periodId ID del periodo académico
+     * @return Lista de franjas disponibles [{timeSlotId, label, timeSlotJson}]
+     */
+    @GetMapping("/timeSlots/available")
+    public ResponseEntity<?> getAvailableTimeSlots(
+            @RequestParam("teacherId") Integer teacherId,
+            @RequestParam("dayOfWeek") Short dayOfWeek,
+            @RequestParam("periodId") Integer periodId) {
+        try {
+            if (teacherId == null || teacherId <= 0) {
+                return ResponseEntity.badRequest().body(Map.of("message", "Invalid teacherId parameter"));
+            }
+            if (dayOfWeek == null || dayOfWeek < 1 || dayOfWeek > 7) {
+                return ResponseEntity.badRequest().body(Map.of("message", "Invalid dayOfWeek parameter (must be 1-7)"));
+            }
+            if (periodId == null || periodId <= 0) {
+                return ResponseEntity.badRequest().body(Map.of("message", "Invalid periodId parameter"));
+            }
+
+            List<AvailableTimeSlotDTO> availableSlots = studentCatalogService.getAvailableTimeSlots(teacherId, dayOfWeek, periodId);
+            return ResponseEntity.ok(availableSlots);
+
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(Map.of("message", "Error retrieving available time slots: " + e.getMessage()));
+        }
+    }
 }
