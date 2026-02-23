@@ -219,7 +219,6 @@ public class ExcelHelper {
                 String fechaFinStr = getCellValue(row, 2);
                 String fechaFinNormalizada = ExcelValidator.normalizeDate(fechaFinStr);
                 period.setFechaFin(LocalDate.parse(fechaFinNormalizada));
-
                 periodList.add(period);
             }
             return periodList;
