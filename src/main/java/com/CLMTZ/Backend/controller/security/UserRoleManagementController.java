@@ -23,16 +23,16 @@ public class UserRoleManagementController {
     public ResponseEntity<List<UserRoleManagementRequestDTO>> findAll() { return ResponseEntity.ok(userRoleSer.findAll()); }
 
     @GetMapping("/{id}")
-    public ResponseEntity<UserRoleManagementRequestDTO> findById(@PathVariable("id") Integer id) { return ResponseEntity.ok(service.findById(id)); }
+    public ResponseEntity<UserRoleManagementRequestDTO> findById(@PathVariable("id") Integer id) { return ResponseEntity.ok(userRoleSer.findById(id)); }
 
     @PostMapping
     public ResponseEntity<UserRoleManagementRequestDTO> save(@RequestBody UserRoleManagementRequestDTO dto) { return new ResponseEntity<>(userRoleSer.save(dto), HttpStatus.CREATED); }
 
     @PutMapping("/{id}")
-    public ResponseEntity<UserRoleManagementRequestDTO> update(@PathVariable("id") Integer id, @RequestBody UserRoleManagementRequestDTO dto) { return ResponseEntity.ok(service.update(id, dto)); }
+    public ResponseEntity<UserRoleManagementRequestDTO> update(@PathVariable("id") Integer id, @RequestBody UserRoleManagementRequestDTO dto) { return ResponseEntity.ok(userRoleSer.update(id, dto)); }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable("id") Integer id) { service.deleteById(id); return ResponseEntity.noContent().build(); }
+    public ResponseEntity<Void> delete(@PathVariable("id") Integer id) { userRoleSer.deleteById(id); return ResponseEntity.noContent().build(); }
 
     @GetMapping("/kpi-dashboard-management")
     public ResponseEntity<KpiDashboardManagementResponseDTO> kpiDashboardManagement(){
