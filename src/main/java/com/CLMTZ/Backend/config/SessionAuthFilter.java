@@ -23,7 +23,8 @@ public class SessionAuthFilter implements Filter {
 
     // Rutas públicas que no requieren autenticación
     private static final List<String> PUBLIC_PATHS = Arrays.asList(
-            "/api/auth/login"
+            "/api/auth/login",
+            "/api/auth/me"
     );
 
     @Override
