@@ -1,0 +1,33 @@
+package com.CLMTZ.Backend.dto.ai;
+
+import java.util.List;
+import java.util.Map;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+/**
+ * Request que se envía al servicio de validación IA.
+ * Contiene las filas parseadas del Excel y las reglas del SP destino.
+ */
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class AIValidationRequest {
+
+    /** Tipo de carga: "students", "teachers", "class_schedules", "careers", etc. */
+    private String loadType;
+
+    /** Filas del Excel representadas como mapas clave-valor (nombre columna -> valor) */
+    private List<Map<String, Object>> rows;
+
+    /** Reglas de negocio específicas del SP que se usará (campos obligatorios, formatos, rangos) */
+    private List<String> businessRules;
+
+    /** Nombres de las columnas esperadas */
+    private List<String> expectedColumns;
+}
+
