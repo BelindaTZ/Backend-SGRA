@@ -255,8 +255,6 @@ public class CoordinationController {
         
     }
 
-    private final ISyllabiService syllabiService; // Inyectamos el servicio de temarios
-
     @PostMapping("/upload-syllabi")
     public ResponseEntity<?> uploadSyllabi(@RequestParam("file") MultipartFile file) {
         
@@ -271,7 +269,7 @@ public class CoordinationController {
             List<SyllabiLoadDTO> syllabiDTOs = ExcelHelper.excelToSyllabi(file.getInputStream());
             
             // 3. Procesar en la base de datos a través del servicio
-            List<String> report = syllabiService.uploadSyllabi(syllabiDTOs);
+            List<String> report = service.uploadSyllabi(syllabiDTOs);
             
             // 4. Devolver la respuesta con el reporte detallado
             return ResponseEntity.ok(report);

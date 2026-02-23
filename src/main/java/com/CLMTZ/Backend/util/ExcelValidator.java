@@ -144,7 +144,22 @@ public class ExcelValidator {
     }
 
     public static void validarYCorregir(SyllabiLoadDTO dto) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'validarYCorregir'");
+        if (dto.getCarreraTexto() != null) dto.setCarreraTexto(dto.getCarreraTexto().trim());
+        if (dto.getAsignaturaTexto() != null) dto.setAsignaturaTexto(dto.getAsignaturaTexto().trim());
+        if (dto.getNombreTema() != null) dto.setNombreTema(dto.getNombreTema().trim());
+
+        // 2. Validar que no falten datos cruciales
+        if (dto.getCarreraTexto() == null || dto.getCarreraTexto().isEmpty()) {
+            throw new RuntimeException("El nombre de la carrera no puede estar vacío.");
+        }
+        if (dto.getAsignaturaTexto() == null || dto.getAsignaturaTexto().isEmpty()) {
+            throw new RuntimeException("El nombre de la asignatura no puede estar vacío.");
+        }
+        if (dto.getNombreTema() == null || dto.getNombreTema().isEmpty()) {
+            throw new RuntimeException("El nombre del tema no puede estar vacío.");
+        }
+        if (dto.getUnidad() == null || dto.getUnidad() <= 0) {
+            throw new RuntimeException("La unidad del temario debe ser un número válido mayor a 0.");
+        }
     }
 }
