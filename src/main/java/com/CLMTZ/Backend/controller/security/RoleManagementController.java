@@ -1,7 +1,6 @@
 package com.CLMTZ.Backend.controller.security;
 
 import java.util.List;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,25 +14,9 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequestMapping("/api/security/role-managements")
 @RequiredArgsConstructor
-@CrossOrigin("*")
 public class RoleManagementController {
 
     private final IRoleManagementService roleManagementSer;
-
-    @GetMapping
-    public ResponseEntity<List<RoleManagementRequestDTO>> findAll() { return ResponseEntity.ok(roleManagementSer.findAll()); }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<RoleManagementRequestDTO> findById(@PathVariable("id") Integer id) { return ResponseEntity.ok(roleManagementSer.findById(id)); }
-
-    @PostMapping
-    public ResponseEntity<RoleManagementRequestDTO> save(@RequestBody RoleManagementRequestDTO dto) { return new ResponseEntity<>(roleManagementSer.save(dto), HttpStatus.CREATED); }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<RoleManagementRequestDTO> update(@PathVariable("id") Integer id, @RequestBody RoleManagementRequestDTO dto) { return ResponseEntity.ok(roleManagementSer.update(id, dto)); }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable("id") Integer id) { roleManagementSer.deleteById(id); return ResponseEntity.noContent().build(); }
 
     @PostMapping("/create-role")
     public ResponseEntity<SpResponseDTO> createGRole(@RequestBody RoleManagementRequestDTO requestRole) {

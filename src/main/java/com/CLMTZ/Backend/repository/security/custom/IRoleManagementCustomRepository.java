@@ -10,5 +10,5 @@ public interface IRoleManagementCustomRepository {
 
     SpResponseDTO createRoleManagement(String role, String description);
 
-    SpResponseDTO updateRoleManagement(Integer roleId, String role, String description);
+    SpResponseDTO updateRoleManagement(Integer roleId, String role, String description, Boolean state);
 }

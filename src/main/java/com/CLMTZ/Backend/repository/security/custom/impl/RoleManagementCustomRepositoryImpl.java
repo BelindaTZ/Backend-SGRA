@@ -67,12 +67,13 @@ public class RoleManagementCustomRepositoryImpl implements IRoleManagementCustom
 
     @Override
     @Transactional
-    public SpResponseDTO updateRoleManagement(Integer roleId, String role, String description){
+    public SpResponseDTO updateRoleManagement(Integer roleId, String role, String description, Boolean state){
         StoredProcedureQuery query = entityManager.createStoredProcedureQuery("seguridad.sp_up_grol");
 
         query.registerStoredProcedureParameter("p_idgrol", Integer.class, ParameterMode.IN);
         query.registerStoredProcedureParameter("p_grol", String.class, ParameterMode.IN);
         query.registerStoredProcedureParameter("p_descripcion", String.class, ParameterMode.IN);
+        query.registerStoredProcedureParameter("p_estado", Boolean.class, ParameterMode.IN);
 
         query.registerStoredProcedureParameter("p_mensaje", String.class, ParameterMode.OUT);
         query.registerStoredProcedureParameter("p_exito", Boolean.class, ParameterMode.OUT);
@@ -80,6 +81,7 @@ public class RoleManagementCustomRepositoryImpl implements IRoleManagementCustom
         query.setParameter("p_idgrol", roleId);
         query.setParameter("p_grol", role);
         query.setParameter("p_descripcion", description);
+        query.setParameter("p_estado", state);
 
         query.execute();
 

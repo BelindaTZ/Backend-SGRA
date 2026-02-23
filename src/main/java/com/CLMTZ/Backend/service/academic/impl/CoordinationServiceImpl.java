@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.CLMTZ.Backend.dto.academic.CoordinationDTO;
 import com.CLMTZ.Backend.dto.academic.StudentLoadDTO;
+import com.CLMTZ.Backend.dto.academic.SyllabiLoadDTO;
 import com.CLMTZ.Backend.dto.academic.TeachingDTO;
 import com.CLMTZ.Backend.dto.academic.PeriodDTO;
 import com.CLMTZ.Backend.model.academic.Coordination;
@@ -18,6 +19,8 @@ import com.CLMTZ.Backend.repository.academic.ICoordinationRepository;
 import com.CLMTZ.Backend.repository.academic.IDataLoadRepository;
 import com.CLMTZ.Backend.repository.general.IUserRepository;
 import com.CLMTZ.Backend.service.academic.ICoordinationService;
+import com.CLMTZ.Backend.util.ExcelValidator;
+
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.ParameterMode; // Importante
 import jakarta.persistence.PersistenceContext;
@@ -405,20 +408,60 @@ public class CoordinationServiceImpl implements ICoordinationService {
         return Boolean.TRUE.equals(exito) ? "OK" : "FALLÓ SP: " + mensaje;
     }
 
+
+    public List<String> uploadSyllabi(List<SyllabiLoadDTO> dtos) {
+        List<String> resultados = new ArrayList<>();
+
+        for (SyllabiLoadDTO fila : dtos) {
+            try {
+                // Aquí usamos el ExcelValidator que arreglaste antes para limpiar espacios
+                ExcelValidator.validarYCorregir(fila);
+
+                // IMPORTANTE: Asegúrate de pasar los parámetros en este orden exacto:
+                // 1. Asignatura, 2. Carrera, 3. Unidad, 4. Nombre del Tema
+                String resultadoSP = ejecutarCargaTemarioSP(
+                        fila.getAsignaturaTexto(), 
+                        fila.getCarreraTexto(), 
+                        fila.getUnidad(), 
+                        fila.getNombreTema()
+                );
+
+                resultados.add("Temario '" + fila.getNombreTema() + "': " + resultadoSP);
+
+            } catch (Exception e) {
+                resultados.add("Temario '" + fila.getNombreTema() + "': ERROR (" + e.getMessage() + ")");
+                e.printStackTrace();
+            }
+        }
+        return resultados;
+    }
+
     // 6. Syllabus/Temarios
-    private String ejecutarCargaTemarioSP(Integer idAsignatura, Integer idPeriodo, String descripcion) {
+    private String ejecutarCargaTemarioSP(String nombreAsignatura, String nombreCarrera, Integer unidad, String nombreTema) {
         StoredProcedureQuery query = entityManager.createStoredProcedureQuery("academico.sp_in_carga_temario");
-        query.registerStoredProcedureParameter("p_idasignatura", Integer.class, ParameterMode.IN);
-        query.registerStoredProcedureParameter("p_idperiodo", Integer.class, ParameterMode.IN);
-        query.registerStoredProcedureParameter("p_descripcion", String.class, ParameterMode.IN);
+
+        // REGISTRO DE PARÁMETROS: Deben coincidir EXACTAMENTE con los de PostgreSQL
+        query.registerStoredProcedureParameter("p_nombre_asignatura", String.class, ParameterMode.IN);
+        query.registerStoredProcedureParameter("p_nombre_carrera", String.class, ParameterMode.IN);
+        query.registerStoredProcedureParameter("p_unidad", Integer.class, ParameterMode.IN);
+        query.registerStoredProcedureParameter("p_nombre_tema", String.class, ParameterMode.IN);
+        
+        // Parámetros OUT
         query.registerStoredProcedureParameter("p_mensaje", String.class, ParameterMode.OUT);
         query.registerStoredProcedureParameter("p_exito", Boolean.class, ParameterMode.OUT);
-        query.setParameter("p_idasignatura", idAsignatura);
-        query.setParameter("p_idperiodo", idPeriodo);
-        query.setParameter("p_descripcion", descripcion);
+
+        // SETEO DE VALORES
+        query.setParameter("p_nombre_asignatura", nombreAsignatura);
+        query.setParameter("p_nombre_carrera", nombreCarrera);
+        query.setParameter("p_unidad", unidad);
+        query.setParameter("p_nombre_tema", nombreTema);
+
+        // EJECUCIÓN
         query.execute();
+
         String mensaje = (String) query.getOutputParameterValue("p_mensaje");
         Boolean exito = (Boolean) query.getOutputParameterValue("p_exito");
+        
         return Boolean.TRUE.equals(exito) ? "OK" : "FALLÓ SP: " + mensaje;
     }
 

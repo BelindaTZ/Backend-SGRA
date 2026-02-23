@@ -6,6 +6,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.CLMTZ.Backend.dto.security.Request.UserRoleManagementRequestDTO;
+import com.CLMTZ.Backend.dto.security.Response.KpiDashboardManagementResponseDTO;
+import com.CLMTZ.Backend.service.security.IRoleManagementService;
 import com.CLMTZ.Backend.service.security.IUserRoleManagementService;
 import lombok.RequiredArgsConstructor;
 
@@ -14,20 +16,27 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class UserRoleManagementController {
 
-    private final IUserRoleManagementService service;
+    private final IUserRoleManagementService userRoleSer;
+    private final IRoleManagementService roleManagementSer;
 
     @GetMapping
-    public ResponseEntity<List<UserRoleManagementRequestDTO>> findAll() { return ResponseEntity.ok(service.findAll()); }
+    public ResponseEntity<List<UserRoleManagementRequestDTO>> findAll() { return ResponseEntity.ok(userRoleSer.findAll()); }
 
     @GetMapping("/{id}")
     public ResponseEntity<UserRoleManagementRequestDTO> findById(@PathVariable("id") Integer id) { return ResponseEntity.ok(service.findById(id)); }
 
     @PostMapping
-    public ResponseEntity<UserRoleManagementRequestDTO> save(@RequestBody UserRoleManagementRequestDTO dto) { return new ResponseEntity<>(service.save(dto), HttpStatus.CREATED); }
+    public ResponseEntity<UserRoleManagementRequestDTO> save(@RequestBody UserRoleManagementRequestDTO dto) { return new ResponseEntity<>(userRoleSer.save(dto), HttpStatus.CREATED); }
 
     @PutMapping("/{id}")
     public ResponseEntity<UserRoleManagementRequestDTO> update(@PathVariable("id") Integer id, @RequestBody UserRoleManagementRequestDTO dto) { return ResponseEntity.ok(service.update(id, dto)); }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable("id") Integer id) { service.deleteById(id); return ResponseEntity.noContent().build(); }
+
+    @GetMapping("/kpi-dashboard-management")
+    public ResponseEntity<KpiDashboardManagementResponseDTO> kpiDashboardManagement(){
+        KpiDashboardManagementResponseDTO kpidashboard = roleManagementSer.kpisDashboadrManagement();
+        return ResponseEntity.ok(kpidashboard);
+    }
 }

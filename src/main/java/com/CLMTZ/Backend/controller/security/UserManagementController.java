@@ -2,7 +2,6 @@ package com.CLMTZ.Backend.controller.security;
 
 import java.time.LocalDate;
 import java.util.List;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,33 +20,6 @@ import lombok.RequiredArgsConstructor;
 public class UserManagementController {
 
     private final IUserManagementService userManagementser;
-
-    @GetMapping
-    public ResponseEntity<List<UserManagementRequestDTO>> findAll() {
-        return ResponseEntity.ok(userManagementser.findAll());
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<UserManagementRequestDTO> findById(@PathVariable("id") Integer id) {
-        return ResponseEntity.ok(userManagementser.findById(id));
-    }
-
-    @PostMapping
-    public ResponseEntity<UserManagementRequestDTO> save(@RequestBody UserManagementRequestDTO dto) {
-        return new ResponseEntity<>(userManagementser.save(dto), HttpStatus.CREATED);
-    }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<UserManagementRequestDTO> update(@PathVariable("id") Integer id,
-            @RequestBody UserManagementRequestDTO dto) {
-        return ResponseEntity.ok(userManagementser.update(id, dto));
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable("id") Integer id) {
-        userManagementser.deleteById(id);
-        return ResponseEntity.noContent().build();
-    }
 
     @GetMapping("/list-userG")
     public ResponseEntity<List<UserListManagementResponseDTO>> listUserG(@RequestParam(required = false) String filter,

@@ -2,13 +2,20 @@ package com.CLMTZ.Backend.service.academic.impl;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
 import org.springframework.stereotype.Service;
+
 import com.CLMTZ.Backend.dto.academic.SyllabiDTO;
 import com.CLMTZ.Backend.dto.academic.SyllabiLoadDTO;
 import com.CLMTZ.Backend.model.academic.Syllabi;
 import com.CLMTZ.Backend.repository.academic.ISubjectRepository;
 import com.CLMTZ.Backend.repository.academic.ISyllabiRepository;
 import com.CLMTZ.Backend.service.academic.ISyllabiService;
+import com.CLMTZ.Backend.util.ExcelValidator;
+
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.ParameterMode;
+import jakarta.persistence.StoredProcedureQuery;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -17,6 +24,7 @@ public class SyllabiServiceImpl implements ISyllabiService {
 
     private final ISyllabiRepository repository;
     private final ISubjectRepository subjectRepository;
+    private final EntityManager entityManager;
 
     @Override
     public List<SyllabiDTO> findAll() {
@@ -67,7 +75,47 @@ public class SyllabiServiceImpl implements ISyllabiService {
     }
 
     @Override
-    public List<String> uploadSyllabi(List<SyllabiLoadDTO> syllabiDTOs){
-        return null;
+    public List<String> uploadSyllabi(List<SyllabiLoadDTO> syllabiDTOs) {
+        // Validar y corregir datos
+        List<String> resultados = new java.util.ArrayList<>();
+        for (SyllabiLoadDTO dto : syllabiDTOs) {
+            // Validar/corregir campos
+            ExcelValidator.validarYCorregir(dto);
+            try {
+                // Llamar stored procedure
+                String resultado = ejecutarCargaTemarioSP(
+                    dto.getCarreraTexto(),
+                    dto.getAsignaturaTexto(),
+                    dto.getUnidad(), 
+                    dto.getNombreTema()
+                );
+                resultados.add(resultado);
+            } catch (Exception e) {
+                resultados.add("Error: " + e.getMessage());
+            }
+        }
+        return resultados;
+    }
+
+    private String ejecutarCargaTemarioSP(String carreraTexto, String asignaturaTexto, Integer unidad,
+            String nombreTema) {
+        StoredProcedureQuery query = entityManager.createStoredProcedureQuery("academico.sp_in_carga_temario");
+        query.registerStoredProcedureParameter("p_carrera", String.class, ParameterMode.IN);
+        query.registerStoredProcedureParameter("p_asignatura", String.class, ParameterMode.IN);
+        query.registerStoredProcedureParameter("p_unidad", Integer.class, ParameterMode.IN);
+        query.registerStoredProcedureParameter("p_descripcion", String.class, ParameterMode.IN);
+        query.registerStoredProcedureParameter("p_mensaje", String.class, ParameterMode.OUT);
+        query.registerStoredProcedureParameter("p_exito", Boolean.class, ParameterMode.OUT);
+        
+        query.setParameter("p_carrera", carreraTexto);
+        query.setParameter("p_asignatura", asignaturaTexto);
+        query.setParameter("p_unidad", unidad);
+        query.setParameter("p_descripcion", nombreTema);
+        
+        query.execute();
+        
+        String mensaje = (String) query.getOutputParameterValue("p_mensaje");
+        Boolean exito = (Boolean) query.getOutputParameterValue("p_exito");
+        return Boolean.TRUE.equals(exito) ? "OK" : "FALLÓ SP: " + mensaje;
     }
 }

@@ -15,7 +15,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -132,7 +131,9 @@ public class ExcelHelper {
                 // Columna D (3): Nombre del Tema
                 syllabi.setNombreTema(getCellValue(row, 3));
                 syllabiList.add(syllabi);
+                System.out.println("Temario excel: " + syllabi.getUnidad() + " - " + syllabi.getNombreTema());
             }
+
             return syllabiList;
         } catch (Exception e) {
             throw new RuntimeException("Error al parsear el archivo Excel de Temarios: " + e.getMessage());
@@ -213,12 +214,13 @@ public class ExcelHelper {
                 
                 // Columna B (1): Fecha de Inicio (Formato esperado: YYYY-MM-DD)
                 String fechaInicioStr = getCellValue(row, 1);
-                period.setFechaInicio(LocalDate.parse(fechaInicioStr));
+                String fechaInicioNormalizada = ExcelValidator.normalizeDate(fechaInicioStr);
+                period.setFechaInicio(LocalDate.parse(fechaInicioNormalizada));
                 
                 // Columna C (2): Fecha de Fin (Formato esperado: YYYY-MM-DD)
                 String fechaFinStr = getCellValue(row, 2);
-                period.setFechaFin(LocalDate.parse(fechaFinStr));
-
+                String fechaFinNormalizada = ExcelValidator.normalizeDate(fechaFinStr);
+                period.setFechaFin(LocalDate.parse(fechaFinNormalizada));
                 periodList.add(period);
             }
             return periodList;
@@ -342,51 +344,6 @@ public class ExcelHelper {
         }
         
         return LocalTime.parse(timeStr);
-    }
-    // Método a prueba de balas para leer celdas de Excel
-    private static String getCellValue1(Row row, int cellIndex) {
-        // Obtenemos la celda, si no existe o está vacía, evitamos el NullPointerException
-        Cell cell = row.getCell(cellIndex, Row.MissingCellPolicy.RETURN_BLANK_AS_NULL);
-        
-        if (cell == null) {
-            return "";
-        }
-
-        switch (cell.getCellType()) {
-            case STRING:
-                return cell.getStringCellValue().trim();
-                
-            case NUMERIC:
-                // 1. ¿Es una fecha disfrazada de número?
-                if (DateUtil.isCellDateFormatted(cell)) {
-                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-                    return sdf.format(cell.getDateCellValue());
-                } else {
-                    // 2. Es un número normal. ¿Tiene decimales inútiles como "3.0"?
-                    double value = cell.getNumericCellValue();
-                    if (value == Math.floor(value)) {
-                        // Es un número entero (ej: 3)
-                        return String.valueOf((long) value);
-                    } else {
-                        // Es un decimal real (ej: 3.5)
-                        return String.valueOf(value);
-                    }
-                }
-                
-            case BOOLEAN:
-                return String.valueOf(cell.getBooleanCellValue());
-                
-            case FORMULA:
-                try {
-                    return cell.getStringCellValue();
-                } catch (Exception e) {
-                    return String.valueOf(cell.getNumericCellValue());
-                }
-                
-            case BLANK:
-            default:
-                return "";
-        }
     }
     // Método para ignorar filas que parecen existir pero no tienen datos
     private static boolean isRowEmpty1(Row row) {

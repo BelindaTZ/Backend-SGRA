@@ -8,4 +8,8 @@ public class SyllabiLoadDTO {
     private String asignaturaTexto;
     private Integer unidad;
     private String nombreTema;
+    
+    public String getNameSyllabi() {
+        return this.nombreTema;
+    }
 }

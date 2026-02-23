@@ -1,16 +1,17 @@
 package com.CLMTZ.Backend.service.security.impl;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.CLMTZ.Backend.dto.security.Request.RoleManagementRequestDTO;
+import com.CLMTZ.Backend.dto.security.Response.KpiDashboardManagementResponseDTO;
 import com.CLMTZ.Backend.dto.security.Response.RoleListManagementResponseDTO;
 import com.CLMTZ.Backend.dto.security.Response.SpResponseDTO;
 import com.CLMTZ.Backend.model.security.RoleManagement;
 import com.CLMTZ.Backend.repository.security.IRoleManagementRepository;
+import com.CLMTZ.Backend.repository.security.IUserManagementRepository;
 import com.CLMTZ.Backend.repository.security.custom.IRoleManagementCustomRepository;
 import com.CLMTZ.Backend.service.security.IRoleManagementService;
 
@@ -22,39 +23,7 @@ public class RoleManagementServiceImpl implements IRoleManagementService {
 
     private final IRoleManagementRepository roleManagementRepo;
     private final IRoleManagementCustomRepository roleManagementCustomRepo;
-
-    @Override
-    public List<RoleManagementRequestDTO> findAll() { return roleManagementRepo.findAll().stream().map(this::toDTO).collect(Collectors.toList()); }
-
-    @Override
-    public RoleManagementRequestDTO findById(Integer id) { return roleManagementRepo.findById(id).map(this::toDTO).orElseThrow(() -> new RuntimeException("RoleManagement not found with id: " + id)); }
-
-    @Override
-    public RoleManagementRequestDTO save(RoleManagementRequestDTO dto) {
-        RoleManagement e = new RoleManagement();
-        e.setRoleG(dto.getRoleG()); e.setServerRole(dto.getServerRole()); e.setDescription(dto.getDescription());
-        e.setCreatedAt(dto.getCreatedAt()); e.setState(dto.getState() != null ? dto.getState() : true);
-        return toDTO(roleManagementRepo.save(e));
-    }
-
-    @Override
-    public RoleManagementRequestDTO update(Integer id, RoleManagementRequestDTO dto) {
-        RoleManagement e = roleManagementRepo.findById(id).orElseThrow(() -> new RuntimeException("RoleManagement not found with id: " + id));
-        e.setRoleG(dto.getRoleG()); e.setServerRole(dto.getServerRole()); e.setDescription(dto.getDescription());
-        e.setCreatedAt(dto.getCreatedAt()); e.setState(dto.getState());
-        return toDTO(roleManagementRepo.save(e));
-    }
-
-    @Override
-    public void deleteById(Integer id) { roleManagementRepo.deleteById(id); }
-    
-
-    private RoleManagementRequestDTO toDTO(RoleManagement e) {
-        RoleManagementRequestDTO d = new RoleManagementRequestDTO();
-        d.setRoleGId(e.getRoleGId()); d.setRoleG(e.getRoleG()); d.setServerRole(e.getServerRole());
-        d.setDescription(e.getDescription()); d.setCreatedAt(e.getCreatedAt()); d.setState(e.getState());
-        return d;
-    }
+    private final IUserManagementRepository userManagementRepo;
 
     @Override
     @Transactional(readOnly = true)
@@ -97,9 +66,26 @@ public class RoleManagementServiceImpl implements IRoleManagementService {
     @Transactional
     public SpResponseDTO updateRoleManagement(RoleManagementRequestDTO roleRequest){
         try{
-            return roleManagementCustomRepo.updateRoleManagement(roleRequest.getRoleGId(), roleRequest.getRoleG(), roleRequest.getDescription());
+            return roleManagementCustomRepo.updateRoleManagement(roleRequest.getRoleGId(), roleRequest.getRoleG(), roleRequest.getDescription(), roleRequest.getState());
         } catch (Exception e){
             throw new RuntimeException("Error al editar el rol: " + e.getMessage());
+        }
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public KpiDashboardManagementResponseDTO kpisDashboadrManagement(){
+
+        try {
+
+            Long userActive = userManagementRepo.countByState(true);
+            Long usersInactive = userManagementRepo.countByState(false);
+            Long roleActive = roleManagementRepo.countByState(true);
+            Long roleInactive = roleManagementRepo.countByState(false);
+
+            return new KpiDashboardManagementResponseDTO(userActive,usersInactive,roleActive,roleInactive);
+        } catch (Exception e) {
+            throw new RuntimeException("Error al cargar los datos del dashboard: " +e.getMessage());
         }
     }
 }
