@@ -131,7 +131,9 @@ public class ExcelHelper {
                 // Columna D (3): Nombre del Tema
                 syllabi.setNombreTema(getCellValue(row, 3));
                 syllabiList.add(syllabi);
+                System.out.println("Temario excel: " + syllabi.getUnidad() + " - " + syllabi.getNombreTema());
             }
+
             return syllabiList;
         } catch (Exception e) {
             throw new RuntimeException("Error al parsear el archivo Excel de Temarios: " + e.getMessage());

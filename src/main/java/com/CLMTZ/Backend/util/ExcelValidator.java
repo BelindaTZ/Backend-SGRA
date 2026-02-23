@@ -4,8 +4,9 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import com.CLMTZ.Backend.dto.academic.SyllabiLoadDTO;
+
+
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -140,5 +141,10 @@ public class ExcelValidator {
         } catch (DateTimeParseException e) {
             return false;
         }
+    }
+
+    public static void validarYCorregir(SyllabiLoadDTO dto) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'validarYCorregir'");
     }
 }
