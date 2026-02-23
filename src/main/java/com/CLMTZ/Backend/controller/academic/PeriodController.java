@@ -19,14 +19,14 @@ public class PeriodController {
     public ResponseEntity<List<PeriodDTO>> findAll() { return ResponseEntity.ok(service.findAll()); }
 
     @GetMapping("/{id}")
-    public ResponseEntity<PeriodDTO> findById(@PathVariable Integer id) { return ResponseEntity.ok(service.findById(id)); }
+    public ResponseEntity<PeriodDTO> findById(@PathVariable("id") Integer id) { return ResponseEntity.ok(service.findById(id)); }
 
     @PostMapping
     public ResponseEntity<PeriodDTO> save(@RequestBody PeriodDTO dto) { return new ResponseEntity<>(service.save(dto), HttpStatus.CREATED); }
 
     @PutMapping("/{id}")
-    public ResponseEntity<PeriodDTO> update(@PathVariable Integer id, @RequestBody PeriodDTO dto) { return ResponseEntity.ok(service.update(id, dto)); }
+    public ResponseEntity<PeriodDTO> update(@PathVariable("id") Integer id, @RequestBody PeriodDTO dto) { return ResponseEntity.ok(service.update(id, dto)); }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Integer id) { service.deleteById(id); return ResponseEntity.noContent().build(); }
+    public ResponseEntity<Void> delete(@PathVariable("id") Integer id) { service.deleteById(id); return ResponseEntity.noContent().build(); }
 }

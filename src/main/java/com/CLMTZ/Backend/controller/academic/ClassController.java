@@ -19,14 +19,14 @@ public class ClassController {
     public ResponseEntity<List<ClassDTO>> findAll() { return ResponseEntity.ok(service.findAll()); }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ClassDTO> findById(@PathVariable Integer id) { return ResponseEntity.ok(service.findById(id)); }
+    public ResponseEntity<ClassDTO> findById(@PathVariable("id") Integer id) { return ResponseEntity.ok(service.findById(id)); }
 
     @PostMapping
     public ResponseEntity<ClassDTO> save(@RequestBody ClassDTO dto) { return new ResponseEntity<>(service.save(dto), HttpStatus.CREATED); }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ClassDTO> update(@PathVariable Integer id, @RequestBody ClassDTO dto) { return ResponseEntity.ok(service.update(id, dto)); }
+    public ResponseEntity<ClassDTO> update(@PathVariable("id") Integer id, @RequestBody ClassDTO dto) { return ResponseEntity.ok(service.update(id, dto)); }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Integer id) { service.deleteById(id); return ResponseEntity.noContent().build(); }
+    public ResponseEntity<Void> delete(@PathVariable("id") Integer id) { service.deleteById(id); return ResponseEntity.noContent().build(); }
 }

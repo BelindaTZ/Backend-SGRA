@@ -29,7 +29,7 @@ public class StudentCatalogController {
     }
 
     @GetMapping("/subjects/{subjectId}/syllabi")
-    public ResponseEntity<?> getSyllabiBySubject(@PathVariable Integer subjectId) {
+    public ResponseEntity<?> getSyllabiBySubject(@PathVariable("subjectId") Integer subjectId) {
         try {
             if (subjectId == null || subjectId <= 0) {
                 return ResponseEntity.badRequest().body(Map.of("message", "Invalid subjectId parameter"));

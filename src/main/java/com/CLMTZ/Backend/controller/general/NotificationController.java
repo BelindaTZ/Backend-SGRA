@@ -19,14 +19,14 @@ public class NotificationController {
     public ResponseEntity<List<NotificationDTO>> findAll() { return ResponseEntity.ok(service.findAll()); }
 
     @GetMapping("/{id}")
-    public ResponseEntity<NotificationDTO> findById(@PathVariable Integer id) { return ResponseEntity.ok(service.findById(id)); }
+    public ResponseEntity<NotificationDTO> findById(@PathVariable("id") Integer id) { return ResponseEntity.ok(service.findById(id)); }
 
     @PostMapping
     public ResponseEntity<NotificationDTO> save(@RequestBody NotificationDTO dto) { return new ResponseEntity<>(service.save(dto), HttpStatus.CREATED); }
 
     @PutMapping("/{id}")
-    public ResponseEntity<NotificationDTO> update(@PathVariable Integer id, @RequestBody NotificationDTO dto) { return ResponseEntity.ok(service.update(id, dto)); }
+    public ResponseEntity<NotificationDTO> update(@PathVariable("id") Integer id, @RequestBody NotificationDTO dto) { return ResponseEntity.ok(service.update(id, dto)); }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Integer id) { service.deleteById(id); return ResponseEntity.noContent().build(); }
+    public ResponseEntity<Void> delete(@PathVariable("id") Integer id) { service.deleteById(id); return ResponseEntity.noContent().build(); }
 }

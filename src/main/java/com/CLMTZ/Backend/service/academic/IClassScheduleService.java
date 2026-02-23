@@ -1,8 +1,7 @@
 package com.CLMTZ.Backend.service.academic;
-
 import java.util.List;
-
 import com.CLMTZ.Backend.dto.academic.ClassScheduleDTO;
+import com.CLMTZ.Backend.dto.academic.ClassScheduleDetailDTO;
 import com.CLMTZ.Backend.dto.academic.ClassScheduleLoadDTO;
 
 public interface IClassScheduleService {
@@ -12,4 +11,5 @@ public interface IClassScheduleService {
     ClassScheduleDTO update(Integer id, ClassScheduleDTO dto);
     void deleteById(Integer id);
     List<String> uploadClassSchedules(List<ClassScheduleLoadDTO> scheduleDTOs);
+    List<ClassScheduleDetailDTO> findByUserId(Integer userId);
 }

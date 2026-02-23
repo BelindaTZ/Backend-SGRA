@@ -14,7 +14,6 @@ import com.CLMTZ.Backend.dto.security.Response.UserRolesUpdateManagementResponse
 import com.CLMTZ.Backend.service.security.IUserManagementService;
 import lombok.RequiredArgsConstructor;
 
-
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/security/user-managements")
@@ -24,43 +23,56 @@ public class UserManagementController {
     private final IUserManagementService userManagementser;
 
     @GetMapping
-    public ResponseEntity<List<UserManagementRequestDTO>> findAll() { return ResponseEntity.ok(userManagementser.findAll()); }
+    public ResponseEntity<List<UserManagementRequestDTO>> findAll() {
+        return ResponseEntity.ok(userManagementser.findAll());
+    }
 
     @GetMapping("/{id}")
-    public ResponseEntity<UserManagementRequestDTO> findById(@PathVariable Integer id) { return ResponseEntity.ok(userManagementser.findById(id)); }
+    public ResponseEntity<UserManagementRequestDTO> findById(@PathVariable("id") Integer id) {
+        return ResponseEntity.ok(userManagementser.findById(id));
+    }
 
     @PostMapping
-    public ResponseEntity<UserManagementRequestDTO> save(@RequestBody UserManagementRequestDTO dto) { return new ResponseEntity<>(userManagementser.save(dto), HttpStatus.CREATED); }
+    public ResponseEntity<UserManagementRequestDTO> save(@RequestBody UserManagementRequestDTO dto) {
+        return new ResponseEntity<>(userManagementser.save(dto), HttpStatus.CREATED);
+    }
 
     @PutMapping("/{id}")
-    public ResponseEntity<UserManagementRequestDTO> update(@PathVariable Integer id, @RequestBody UserManagementRequestDTO dto) { return ResponseEntity.ok(userManagementser.update(id, dto)); }
+    public ResponseEntity<UserManagementRequestDTO> update(@PathVariable("id") Integer id,
+            @RequestBody UserManagementRequestDTO dto) {
+        return ResponseEntity.ok(userManagementser.update(id, dto));
+    }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Integer id) { userManagementser.deleteById(id); return ResponseEntity.noContent().build(); }
+    public ResponseEntity<Void> delete(@PathVariable("id") Integer id) {
+        userManagementser.deleteById(id);
+        return ResponseEntity.noContent().build();
+    }
 
     @GetMapping("/list-userG")
-    public ResponseEntity<List<UserListManagementResponseDTO>> listUserG(@RequestParam(required = false) String filter,@RequestParam(required = false) LocalDate date, @RequestParam(required = false) Boolean state){
-        List<UserListManagementResponseDTO> requestList =  userManagementser.listUserListManagement(filter, date, state);
-        return  ResponseEntity.ok(requestList);
+    public ResponseEntity<List<UserListManagementResponseDTO>> listUserG(@RequestParam(required = false) String filter,
+            @RequestParam(required = false) LocalDate date, @RequestParam(required = false) Boolean state) {
+        List<UserListManagementResponseDTO> requestList = userManagementser.listUserListManagement(filter, date, state);
+        return ResponseEntity.ok(requestList);
     }
 
     @GetMapping("/list-userG-update")
-    public ResponseEntity<UserRoleManagementResponseDTO> DataUserById(@RequestParam Integer idUser){
+    public ResponseEntity<UserRoleManagementResponseDTO> DataUserById(@RequestParam("idUser") Integer idUser) {
         UserRoleManagementResponseDTO request = userManagementser.DataUserById(idUser);
         return ResponseEntity.ok(request);
     }
 
     @PostMapping("/create-user")
-    public ResponseEntity<SpResponseDTO> createUser(@RequestBody UserManagementRequestDTO requestUser) {    
-        
+    public ResponseEntity<SpResponseDTO> createUser(@RequestBody UserManagementRequestDTO requestUser) {
+
         SpResponseDTO request = userManagementser.createUserManagement(requestUser);
 
         return ResponseEntity.ok(request);
     }
-    
+
     @PutMapping("/update-user")
-    public ResponseEntity<SpResponseDTO> updateGUser(@RequestBody UserRolesUpdateManagementResponseDTO requestUser) {    
-        
+    public ResponseEntity<SpResponseDTO> updateGUser(@RequestBody UserRolesUpdateManagementResponseDTO requestUser) {
+
         SpResponseDTO request = userManagementser.updateUserManagement(requestUser);
 
         return ResponseEntity.ok(request);

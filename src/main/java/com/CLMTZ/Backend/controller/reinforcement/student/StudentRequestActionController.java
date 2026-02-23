@@ -20,7 +20,7 @@ public class StudentRequestActionController {
     }
 
     @PutMapping("/{requestId}/cancel")
-    public ResponseEntity<?> cancelRequest(@PathVariable Integer requestId) {
+    public ResponseEntity<?> cancelRequest(@PathVariable("requestId") Integer requestId) {
         try {
             UserContext ctx = UserContextHolder.getContext();
             Integer userId = ctx.getUserId();

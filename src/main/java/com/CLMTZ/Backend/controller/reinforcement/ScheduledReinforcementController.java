@@ -19,14 +19,14 @@ public class ScheduledReinforcementController {
     public ResponseEntity<List<ScheduledReinforcementDTO>> findAll() { return ResponseEntity.ok(service.findAll()); }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ScheduledReinforcementDTO> findById(@PathVariable Integer id) { return ResponseEntity.ok(service.findById(id)); }
+    public ResponseEntity<ScheduledReinforcementDTO> findById(@PathVariable("id") Integer id) { return ResponseEntity.ok(service.findById(id)); }
 
     @PostMapping
     public ResponseEntity<ScheduledReinforcementDTO> save(@RequestBody ScheduledReinforcementDTO dto) { return new ResponseEntity<>(service.save(dto), HttpStatus.CREATED); }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ScheduledReinforcementDTO> update(@PathVariable Integer id, @RequestBody ScheduledReinforcementDTO dto) { return ResponseEntity.ok(service.update(id, dto)); }
+    public ResponseEntity<ScheduledReinforcementDTO> update(@PathVariable("id") Integer id, @RequestBody ScheduledReinforcementDTO dto) { return ResponseEntity.ok(service.update(id, dto)); }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Integer id) { service.deleteById(id); return ResponseEntity.noContent().build(); }
+    public ResponseEntity<Void> delete(@PathVariable("id") Integer id) { service.deleteById(id); return ResponseEntity.noContent().build(); }
 }

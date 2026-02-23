@@ -26,6 +26,7 @@ import com.CLMTZ.Backend.service.academic.ISubjectService;
 import com.CLMTZ.Backend.service.academic.ISyllabiService;
 import com.CLMTZ.Backend.util.ExcelHelper;
 
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -39,19 +40,19 @@ public class CoordinationController {
     public ResponseEntity<List<CoordinationDTO>> findAll() { return ResponseEntity.ok(service.findAll()); }
 
     @GetMapping("/{id}")
-    public ResponseEntity<CoordinationDTO> findById(@PathVariable Integer id) { return ResponseEntity.ok(service.findById(id)); }
+    public ResponseEntity<CoordinationDTO> findById(@PathVariable("id") Integer id) { return ResponseEntity.ok(service.findById(id)); }
 
     @PostMapping
     public ResponseEntity<CoordinationDTO> save(@RequestBody CoordinationDTO dto) { return new ResponseEntity<>(service.save(dto), HttpStatus.CREATED); }
 
     @PutMapping("/{id}")
-    public ResponseEntity<CoordinationDTO> update(@PathVariable Integer id, @RequestBody CoordinationDTO dto) { return ResponseEntity.ok(service.update(id, dto)); }
+    public ResponseEntity<CoordinationDTO> update(@PathVariable("id") Integer id, @RequestBody CoordinationDTO dto) { return ResponseEntity.ok(service.update(id, dto)); }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Integer id) { service.deleteById(id); return ResponseEntity.noContent().build(); }
+    public ResponseEntity<Void> delete(@PathVariable("id") Integer id) { service.deleteById(id); return ResponseEntity.noContent().build(); }
 
     @PostMapping("/upload-students")
-    public ResponseEntity<?> uploadStudents(@RequestParam("file") MultipartFile file) {
+    public ResponseEntity<?> uploadStudents(@NonNull @RequestParam("file") MultipartFile file) {
         String message = "";
 
         // LOGS DETALLADOS

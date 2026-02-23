@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
 import com.CLMTZ.Backend.dto.academic.ClassScheduleDTO;
+import com.CLMTZ.Backend.dto.academic.ClassScheduleDetailDTO;
 import com.CLMTZ.Backend.dto.academic.ClassScheduleLoadDTO;
 import com.CLMTZ.Backend.model.academic.ClassSchedule;
 import com.CLMTZ.Backend.repository.academic.*;
@@ -23,6 +24,7 @@ public class ClassScheduleServiceImpl implements IClassScheduleService {
     private final ITimeSlotRepository timeSlotRepository;
     private final IClassRepository classRepository;
     private final IPeriodRepository periodRepository;
+    private final ITeachingRepository teachingRepository;
 
     @Override
     public List<ClassScheduleDTO> findAll() {
@@ -46,9 +48,15 @@ public class ClassScheduleServiceImpl implements IClassScheduleService {
                 .orElseThrow(() -> new RuntimeException("ClassSchedule not found with id: " + id));
         entity.setDay(dto.getDay());
         entity.setActive(dto.getActive());
-        if (dto.getTimeSlotId() != null) entity.setTimeSlotId(timeSlotRepository.findById(dto.getTimeSlotId()).orElseThrow(() -> new RuntimeException("TimeSlot not found")));
-        if (dto.getAssignedClassId() != null) entity.setAssignedClassId(classRepository.findById(dto.getAssignedClassId()).orElseThrow(() -> new RuntimeException("Class not found")));
-        if (dto.getPeriodId() != null) entity.setPeriodId(periodRepository.findById(dto.getPeriodId()).orElseThrow(() -> new RuntimeException("Period not found")));
+        if (dto.getTimeSlotId() != null)
+            entity.setTimeSlotId(timeSlotRepository.findById(dto.getTimeSlotId())
+                    .orElseThrow(() -> new RuntimeException("TimeSlot not found")));
+        if (dto.getAssignedClassId() != null)
+            entity.setAssignedClassId(classRepository.findById(dto.getAssignedClassId())
+                    .orElseThrow(() -> new RuntimeException("Class not found")));
+        if (dto.getPeriodId() != null)
+            entity.setPeriodId(periodRepository.findById(dto.getPeriodId())
+                    .orElseThrow(() -> new RuntimeException("Period not found")));
         return toDTO(repository.save(entity));
     }
 
@@ -72,9 +80,15 @@ public class ClassScheduleServiceImpl implements IClassScheduleService {
         ClassSchedule entity = new ClassSchedule();
         entity.setDay(dto.getDay());
         entity.setActive(dto.getActive() != null ? dto.getActive() : true);
-        if (dto.getTimeSlotId() != null) entity.setTimeSlotId(timeSlotRepository.findById(dto.getTimeSlotId()).orElseThrow(() -> new RuntimeException("TimeSlot not found")));
-        if (dto.getAssignedClassId() != null) entity.setAssignedClassId(classRepository.findById(dto.getAssignedClassId()).orElseThrow(() -> new RuntimeException("Class not found")));
-        if (dto.getPeriodId() != null) entity.setPeriodId(periodRepository.findById(dto.getPeriodId()).orElseThrow(() -> new RuntimeException("Period not found")));
+        if (dto.getTimeSlotId() != null)
+            entity.setTimeSlotId(timeSlotRepository.findById(dto.getTimeSlotId())
+                    .orElseThrow(() -> new RuntimeException("TimeSlot not found")));
+        if (dto.getAssignedClassId() != null)
+            entity.setAssignedClassId(classRepository.findById(dto.getAssignedClassId())
+                    .orElseThrow(() -> new RuntimeException("Class not found")));
+        if (dto.getPeriodId() != null)
+            entity.setPeriodId(periodRepository.findById(dto.getPeriodId())
+                    .orElseThrow(() -> new RuntimeException("Period not found")));
         return entity;
     }
 
@@ -106,7 +120,8 @@ public class ClassScheduleServiceImpl implements IClassScheduleService {
                                 cedula, asignatura, paralelo, periodo);
 
                 if (claseOpt.isEmpty()) {
-                    resultados.add("Fila " + filaExcel + ": ERROR (No existe clase asignada para ese docente/asignatura/paralelo/periodo)");
+                    resultados.add("Fila " + filaExcel
+                            + ": ERROR (No existe clase asignada para ese docente/asignatura/paralelo/periodo)");
                     continue;
                 }
 
@@ -117,7 +132,7 @@ public class ClassScheduleServiceImpl implements IClassScheduleService {
                 }
 
                 var franjaOpt = timeSlotRepository.findByStartTimeAndEndTime(fila.getHoraInicio(), fila.getHoraFin());
-                
+
                 if (franjaOpt.isEmpty()) {
                     resultados.add("Fila " + filaExcel + ": ERROR (No existe franja horaria para "
                             + fila.getHoraInicio() + " - " + fila.getHoraFin() + ")");
@@ -159,13 +174,73 @@ public class ClassScheduleServiceImpl implements IClassScheduleService {
                 resultados.add("Fila " + filaExcel + ": OK");
 
             } catch (Exception e) {
-                // Atrapamos el error e imprimimos la traza en consola para que sepas exactamente qué falló
-                e.printStackTrace(); 
+                // Atrapamos el error e imprimimos la traza en consola para que sepas
+                // exactamente qué falló
+                e.printStackTrace();
                 resultados.add("Fila " + filaExcel + ": ERROR INTERNO (" + e.getMessage() + ")");
             }
         }
         return resultados;
     }
+
+    @Override
+    public List<ClassScheduleDetailDTO> findByUserId(Integer userId) {
+        return repository.findByAssignedClassId_TeacherId_UserId_UserId(userId)
+                .stream()
+                .map(this::toDetailDTO)
+                .collect(Collectors.toList());
+    }
+
+    private ClassScheduleDetailDTO toDetailDTO(ClassSchedule entity) {
+        ClassScheduleDetailDTO dto = new ClassScheduleDetailDTO();
+        dto.setIdClassSchedule(entity.getIdClassSchedule());
+        dto.setDay(entity.getDay());
+        dto.setActive(entity.getActive());
+
+        // Franja horaria
+        if (entity.getTimeSlotId() != null) {
+            dto.setTimeSlotId(entity.getTimeSlotId().getTimeSlotId());
+            dto.setStartTime(entity.getTimeSlotId().getStartTime());
+            dto.setEndTime(entity.getTimeSlotId().getEndTime());
+        }
+
+        // Clase asignada
+        if (entity.getAssignedClassId() != null) {
+            var clase = entity.getAssignedClassId();
+            dto.setClassId(clase.getIdClass());
+
+            // Docente
+            if (clase.getTeacherId() != null) {
+                dto.setTeachingId(clase.getTeacherId().getTeachingId());
+                if (clase.getTeacherId().getUserId() != null) {
+                    dto.setTeacherFirstName(clase.getTeacherId().getUserId().getFirstName());
+                    dto.setTeacherLastName(clase.getTeacherId().getUserId().getLastName());
+                    dto.setTeacherIdentification(clase.getTeacherId().getUserId().getIdentification());
+                }
+            }
+
+            // Asignatura
+            if (clase.getSubjectId() != null) {
+                dto.setSubjectId(clase.getSubjectId().getIdSubject());
+                dto.setSubjectName(clase.getSubjectId().getSubject());
+                dto.setSemester(clase.getSubjectId().getSemester());
+            }
+
+            // Paralelo
+            if (clase.getParallelId() != null) {
+                dto.setParallelId(clase.getParallelId().getParallelId());
+                dto.setSection(clase.getParallelId().getSection());
+            }
+        }
+
+        // Periodo
+        if (entity.getPeriodId() != null) {
+            dto.setPeriodId(entity.getPeriodId().getPeriodId());
+            dto.setPeriod(entity.getPeriodId().getPeriod());
+            dto.setPeriodStartDate(entity.getPeriodId().getStartDate());
+            dto.setPeriodEndDate(entity.getPeriodId().getEndDate());
+        }
+
+        return dto;
+    }
 }
-
-

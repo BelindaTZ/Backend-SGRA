@@ -19,14 +19,14 @@ public class ReinforcementPerformedController {
     public ResponseEntity<List<ReinforcementPerformedDTO>> findAll() { return ResponseEntity.ok(service.findAll()); }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ReinforcementPerformedDTO> findById(@PathVariable Integer id) { return ResponseEntity.ok(service.findById(id)); }
+    public ResponseEntity<ReinforcementPerformedDTO> findById(@PathVariable("id") Integer id) { return ResponseEntity.ok(service.findById(id)); }
 
     @PostMapping
     public ResponseEntity<ReinforcementPerformedDTO> save(@RequestBody ReinforcementPerformedDTO dto) { return new ResponseEntity<>(service.save(dto), HttpStatus.CREATED); }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ReinforcementPerformedDTO> update(@PathVariable Integer id, @RequestBody ReinforcementPerformedDTO dto) { return ResponseEntity.ok(service.update(id, dto)); }
+    public ResponseEntity<ReinforcementPerformedDTO> update(@PathVariable("id") Integer id, @RequestBody ReinforcementPerformedDTO dto) { return ResponseEntity.ok(service.update(id, dto)); }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Integer id) { service.deleteById(id); return ResponseEntity.noContent().build(); }
+    public ResponseEntity<Void> delete(@PathVariable("id") Integer id) { service.deleteById(id); return ResponseEntity.noContent().build(); }
 }

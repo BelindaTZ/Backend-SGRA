@@ -19,14 +19,14 @@ public class TimeSlotController {
     public ResponseEntity<List<TimeSlotDTO>> findAll() { return ResponseEntity.ok(service.findAll()); }
 
     @GetMapping("/{id}")
-    public ResponseEntity<TimeSlotDTO> findById(@PathVariable Integer id) { return ResponseEntity.ok(service.findById(id)); }
+    public ResponseEntity<TimeSlotDTO> findById(@PathVariable("id") Integer id) { return ResponseEntity.ok(service.findById(id)); }
 
     @PostMapping
     public ResponseEntity<TimeSlotDTO> save(@RequestBody TimeSlotDTO dto) { return new ResponseEntity<>(service.save(dto), HttpStatus.CREATED); }
 
     @PutMapping("/{id}")
-    public ResponseEntity<TimeSlotDTO> update(@PathVariable Integer id, @RequestBody TimeSlotDTO dto) { return ResponseEntity.ok(service.update(id, dto)); }
+    public ResponseEntity<TimeSlotDTO> update(@PathVariable("id") Integer id, @RequestBody TimeSlotDTO dto) { return ResponseEntity.ok(service.update(id, dto)); }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Integer id) { service.deleteById(id); return ResponseEntity.noContent().build(); }
+    public ResponseEntity<Void> delete(@PathVariable("id") Integer id) { service.deleteById(id); return ResponseEntity.noContent().build(); }
 }

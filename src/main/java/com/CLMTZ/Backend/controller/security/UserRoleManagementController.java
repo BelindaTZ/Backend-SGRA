@@ -20,14 +20,14 @@ public class UserRoleManagementController {
     public ResponseEntity<List<UserRoleManagementRequestDTO>> findAll() { return ResponseEntity.ok(service.findAll()); }
 
     @GetMapping("/{id}")
-    public ResponseEntity<UserRoleManagementRequestDTO> findById(@PathVariable Integer id) { return ResponseEntity.ok(service.findById(id)); }
+    public ResponseEntity<UserRoleManagementRequestDTO> findById(@PathVariable("id") Integer id) { return ResponseEntity.ok(service.findById(id)); }
 
     @PostMapping
     public ResponseEntity<UserRoleManagementRequestDTO> save(@RequestBody UserRoleManagementRequestDTO dto) { return new ResponseEntity<>(service.save(dto), HttpStatus.CREATED); }
 
     @PutMapping("/{id}")
-    public ResponseEntity<UserRoleManagementRequestDTO> update(@PathVariable Integer id, @RequestBody UserRoleManagementRequestDTO dto) { return ResponseEntity.ok(service.update(id, dto)); }
+    public ResponseEntity<UserRoleManagementRequestDTO> update(@PathVariable("id") Integer id, @RequestBody UserRoleManagementRequestDTO dto) { return ResponseEntity.ok(service.update(id, dto)); }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Integer id) { service.deleteById(id); return ResponseEntity.noContent().build(); }
+    public ResponseEntity<Void> delete(@PathVariable("id") Integer id) { service.deleteById(id); return ResponseEntity.noContent().build(); }
 }

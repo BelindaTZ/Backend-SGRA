@@ -19,14 +19,14 @@ public class SubjectsCareersController {
     public ResponseEntity<List<SubjectsCareersDTO>> findAll() { return ResponseEntity.ok(service.findAll()); }
 
     @GetMapping("/{id}")
-    public ResponseEntity<SubjectsCareersDTO> findById(@PathVariable Integer id) { return ResponseEntity.ok(service.findById(id)); }
+    public ResponseEntity<SubjectsCareersDTO> findById(@PathVariable("id") Integer id) { return ResponseEntity.ok(service.findById(id)); }
 
     @PostMapping
     public ResponseEntity<SubjectsCareersDTO> save(@RequestBody SubjectsCareersDTO dto) { return new ResponseEntity<>(service.save(dto), HttpStatus.CREATED); }
 
     @PutMapping("/{id}")
-    public ResponseEntity<SubjectsCareersDTO> update(@PathVariable Integer id, @RequestBody SubjectsCareersDTO dto) { return ResponseEntity.ok(service.update(id, dto)); }
+    public ResponseEntity<SubjectsCareersDTO> update(@PathVariable("id") Integer id, @RequestBody SubjectsCareersDTO dto) { return ResponseEntity.ok(service.update(id, dto)); }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Integer id) { service.deleteById(id); return ResponseEntity.noContent().build(); }
+    public ResponseEntity<Void> delete(@PathVariable("id") Integer id) { service.deleteById(id); return ResponseEntity.noContent().build(); }
 }

@@ -19,14 +19,14 @@ public class WorkAreaController {
     public ResponseEntity<List<WorkAreaDTO>> findAll() { return ResponseEntity.ok(service.findAll()); }
 
     @GetMapping("/{id}")
-    public ResponseEntity<WorkAreaDTO> findById(@PathVariable Integer id) { return ResponseEntity.ok(service.findById(id)); }
+    public ResponseEntity<WorkAreaDTO> findById(@PathVariable("id") Integer id) { return ResponseEntity.ok(service.findById(id)); }
 
     @PostMapping
     public ResponseEntity<WorkAreaDTO> save(@RequestBody WorkAreaDTO dto) { return new ResponseEntity<>(service.save(dto), HttpStatus.CREATED); }
 
     @PutMapping("/{id}")
-    public ResponseEntity<WorkAreaDTO> update(@PathVariable Integer id, @RequestBody WorkAreaDTO dto) { return ResponseEntity.ok(service.update(id, dto)); }
+    public ResponseEntity<WorkAreaDTO> update(@PathVariable("id") Integer id, @RequestBody WorkAreaDTO dto) { return ResponseEntity.ok(service.update(id, dto)); }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Integer id) { service.deleteById(id); return ResponseEntity.noContent().build(); }
+    public ResponseEntity<Void> delete(@PathVariable("id") Integer id) { service.deleteById(id); return ResponseEntity.noContent().build(); }
 }

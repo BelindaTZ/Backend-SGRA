@@ -16,17 +16,28 @@ public class InstitutionController {
     private final IInstitutionService service;
 
     @GetMapping
-    public ResponseEntity<List<InstitutionDTO>> findAll() { return ResponseEntity.ok(service.findAll()); }
+    public ResponseEntity<List<InstitutionDTO>> findAll() {
+        return ResponseEntity.ok(service.findAll());
+    }
 
     @GetMapping("/{id}")
-    public ResponseEntity<InstitutionDTO> findById(@PathVariable Integer id) { return ResponseEntity.ok(service.findById(id)); }
+    public ResponseEntity<InstitutionDTO> findById(@PathVariable("id") Integer id) {
+        return ResponseEntity.ok(service.findById(id));
+    }
 
     @PostMapping
-    public ResponseEntity<InstitutionDTO> save(@RequestBody InstitutionDTO dto) { return new ResponseEntity<>(service.save(dto), HttpStatus.CREATED); }
+    public ResponseEntity<InstitutionDTO> save(@RequestBody InstitutionDTO dto) {
+        return new ResponseEntity<>(service.save(dto), HttpStatus.CREATED);
+    }
 
     @PutMapping("/{id}")
-    public ResponseEntity<InstitutionDTO> update(@PathVariable Integer id, @RequestBody InstitutionDTO dto) { return ResponseEntity.ok(service.update(id, dto)); }
+    public ResponseEntity<InstitutionDTO> update(@PathVariable("id") Integer id, @RequestBody InstitutionDTO dto) {
+        return ResponseEntity.ok(service.update(id, dto));
+    }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Integer id) { service.deleteById(id); return ResponseEntity.noContent().build(); }
+    public ResponseEntity<Void> delete(@PathVariable("id") Integer id) {
+        service.deleteById(id);
+        return ResponseEntity.noContent().build();
+    }
 }
