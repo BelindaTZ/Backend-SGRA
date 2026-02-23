@@ -22,7 +22,6 @@ import com.CLMTZ.Backend.service.academic.ICoordinationService;
 import com.CLMTZ.Backend.service.academic.IEnrollmentDetailService;
 import com.CLMTZ.Backend.service.academic.IPeriodService;
 import com.CLMTZ.Backend.service.academic.ISubjectService;
-import com.CLMTZ.Backend.service.academic.ISyllabiService;
 import com.CLMTZ.Backend.util.ExcelHelper;
 
 import lombok.NonNull;
